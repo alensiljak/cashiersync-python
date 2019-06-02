@@ -48,3 +48,17 @@ def ledger(parameters):
         output = result.stdout
     
     return output
+
+def run_server():
+    """ Available to be called from outside """
+    # use_reloader=False port=23948
+    app.run(host="127.0.0.1", threaded=True, use_reloader=False)
+    # Prod setup: 
+    # debug=False
+
+
+##################################################################################
+if __name__ == '__main__':
+    # Use debug=True to enable template reloading while the app is running.
+    # debug=True <= this is now controlled in config.py.
+    run_server()
