@@ -27,7 +27,9 @@ def currentValues():
     currency = request.args.get('currency')
     params = f"b ^{root} -X {currency}"
     result = ledger(params)
-    return f"current values for {root} in {currency}: {result}"
+    
+    #return f"current values for {root} in {currency}: {result}"
+    return result
 
 def ledger(parameters):
     ''' Execute ledger command '''
