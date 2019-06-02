@@ -43,8 +43,8 @@ class Configuration:
 
     def getTemplate(self):
         return '''# Configuration
-ledger_working_dir:
         '''
+        #ledger_working_dir:
 
     # @property
     def getConfigDir(self):

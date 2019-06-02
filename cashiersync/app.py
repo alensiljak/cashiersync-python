@@ -31,6 +31,15 @@ def currentValues():
     #return f"current values for {root} in {currency}: {result}"
     return result
 
+@app.route('/about')
+def about():
+    ''' display some diagnostics '''
+    import os
+    cwd = os.getcwd()
+    return f"cwd: {cwd}"
+
+###################################
+
 def ledger(parameters):
     ''' Execute ledger command '''
     import subprocess
@@ -39,8 +48,8 @@ def ledger(parameters):
     cfg = Configuration()
 
     command = f"ledger {parameters}"
-    result = subprocess.run(command, shell=True, encoding="utf-8", capture_output=True,
-        cwd=cfg.ledger_working_dir)
+    result = subprocess.run(command, shell=True, encoding="utf-8", capture_output=True)
+    # cwd=cfg.ledger_working_dir
 
     if result.returncode != 0:
         output = result.stderr
