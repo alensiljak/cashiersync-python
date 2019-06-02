@@ -10,6 +10,13 @@ Ledger-cli must be in the path as it will be executed to sync the data.
 The synchronization will create the journal file at the current path in the form 
 `cashiersync-date.ledger`
 
+Optional: set up a tunnel to your machine so that it is available over the internet.
+`ssh -R 80:localhost:5000 serveo.net`
+
+or 
+
+ssh -R cashier:80:localhost:5000 serveo.net
+
 ## Run
 
 `flask run` from cashiersync folder.
