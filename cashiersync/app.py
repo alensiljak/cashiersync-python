@@ -4,6 +4,10 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
+    # test config
+    from cashiersync.config import Configuration
+    cfg = Configuration()
+
     return "Hello World!"
 
 @app.route("/accounts")
