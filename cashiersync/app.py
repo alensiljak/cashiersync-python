@@ -4,7 +4,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    # test config
     return "Hello World!"
 
 @app.route("/accounts")
