@@ -28,7 +28,7 @@ def balance():
 def currentValues():
     root = request.args.get('root')
     currency = request.args.get('currency')
-    params = f"b ^{root} -X {currency}"
+    params = f"b ^{root} -X {currency} --flat --no-total"
     result = ledger(params)
     
     #return f"current values for {root} in {currency}: {result}"
