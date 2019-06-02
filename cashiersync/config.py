@@ -9,44 +9,57 @@ class Configuration:
         self.configFileName = "config.yaml"
         self.appName = "cashiersync"
         self.createConfigFile()
-        self.readConfig()
+        self.config = self.readConfig()
 
     def readConfig(self):
         ''' Read configuration file '''
         import yaml
 
-        path = self.configPath
+        path = self.getConfigPath()
         with open(path, 'r') as stream:
             try:
-                print(yaml.safe_load(stream))
+                content = yaml.safe_load(stream)
+                # print(content)
             except yaml.YAMLError as exc:
                 print(exc)
+
+        return content
 
     def createConfigFile(self):
         ''' create the config file if it does not exist '''
         import os
         # Create the config folder
-        dir = self.configDir
+        dir = self.getConfigDir()
         if not os.path.exists(dir) and not os.path.isdir(dir):
             os.makedirs(dir)
         # Create file
-        path = self.configPath
+        path = self.getConfigPath()
         if os.path.exists(path):
             return
 
         with open(path, "w") as config_file:
-            config_file.write("")
+            content = self.getTemplate()
+            config_file.write(content)
 
-    @property
-    def configDir(self):
+    def getTemplate(self):
+        return '''# Configuration
+ledger_working_dir:
+        '''
+
+    # @property
+    def getConfigDir(self):
         from xdg.BaseDirectory import xdg_config_home
         from os.path import sep
 
         return xdg_config_home + sep + self.appName
 
-    @property
-    def configPath(self):
+    # @property
+    def getConfigPath(self):
         ''' assembles the path to the config file '''
         from os.path import sep
 
-        return self.configDir + sep + self.configFileName
+        return self.getConfigDir() + sep + self.configFileName
+
+    @property
+    def ledger_working_dir(self):
+        return self.config["ledger_working_dir"]
