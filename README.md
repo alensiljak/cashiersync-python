@@ -13,3 +13,15 @@ The synchronization will create the journal file at the current path in the form
 ## Run
 
 `flask run` from cashiersync folder.
+
+## Important
+
+Interestingly, when the app is run through `cashiersync` entry point, the CORS is not initialized.
+But when run with `flask run`, it is.
+
+Use a similar script to start, instead of the entry points:
+
+```
+export FLASK_APP=cashiersync.app
+flask run
+```

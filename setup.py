@@ -12,7 +12,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name="cashiersync",
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    version="1.0.0-beta2",
+    version="1.0.0-beta3",
     description="Server-side synchronization component for Cashier",
     author="Alen Siljak",
     author_email="alen.siljak@gmx.com",
@@ -34,10 +34,10 @@ setup(
         'flask', 'flask_cors',
         'pyyaml', 'pyxdg'
     ],
-    entry_points={
-        'console_scripts': [
-            'cashiersync=cashiersync.app:run_server',
-        ],
-    },
+    # entry_points={
+    #     'console_scripts': [
+    #         'cashiersync=cashiersync.app:run_server',
+    #     ],
+    # },
     include_package_data=True
 )
