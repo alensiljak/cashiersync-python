@@ -25,3 +25,7 @@ Use a similar script to start, instead of the entry points:
 export FLASK_APP=cashiersync.app
 flask run
 ```
+
+## Running on Mobile Devices
+
+The server can also run on Android in Termux. All that is needed in such case is to get the book onto the device, possibly using git. 
