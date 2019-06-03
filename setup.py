@@ -12,7 +12,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name="cashiersync",
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    version="1.0.0-beta3",
+    version='1.0.0',
     description="Server-side synchronization component for Cashier",
     author="Alen Siljak",
     author_email="alen.siljak@gmx.com",
