@@ -2,6 +2,8 @@
 
 Cashier Sync is a server-side component that allows syncing Cashier to a local instance of ledger.
 
+It is written in Python and is available for installation via pip (PyPi).
+
 ## Use
 
 Run `cashiersync` from the folder which is setup for use with ledger. Having a configured .ledgerrc is useful, to point to the ledger files (book, prices, etc.) you want to use.
