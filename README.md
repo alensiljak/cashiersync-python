@@ -35,6 +35,8 @@ export FLASK_APP=cashiersync.app
 flask run
 ```
 
+The code above can be placed into a `cashiersync` executable script in .local/bin folder, for example.
+
 ## Running on Mobile Devices
 
 The server can also run on Android in Termux. All that is needed in such case is to get the book onto the device, possibly using git. 
