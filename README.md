@@ -40,3 +40,7 @@ The code above can be placed into a `cashiersync` executable script in .local/bi
 ## Running on Mobile Devices
 
 The server can also run on Android in Termux. All that is needed in such case is to get the book onto the device, possibly using git. 
+
+## Deployment
+
+See distribute.sh script for the steps

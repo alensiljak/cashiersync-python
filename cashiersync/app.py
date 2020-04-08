@@ -64,7 +64,7 @@ def ledger(parameters):
 def run_server():
     """ Available to be called from outside """
     # use_reloader=False port=23948
-    app.run(host='127.0.0.1', threaded=True, use_reloader=False)
+    app.run(host='0.0.0.0', threaded=True, use_reloader=False)
     # host='127.0.0.1' host='0.0.0.0'
     # , debug=True
     # Prod setup: 
