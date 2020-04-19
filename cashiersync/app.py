@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS #, cross_origin
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -15,7 +16,7 @@ def accounts():
     params = "accounts"
     result = ledger(params)
     
-    return f"accounts: {result}"
+    return f'accounts: {result}'
 
 @app.route("/balance")
 def balance():
@@ -34,6 +35,36 @@ def currentValues():
     #return f"current values for {root} in {currency}: {result}"
     return result
 
+@app.route('/securitydetails')
+def security_details():
+    ''' incomplete
+    The idea is to calculate the security details: 
+    - average price (this will come with --average-lot-prices)
+    - yield in the last 12 months
+    '''
+    symbol = request.args.get('symbol')
+    result = {}
+
+    # lots
+    lots = ledger(f'b ^Assets and :{symbol}$ --lots --no-total --depth 2')
+    result['lots'] = lots
+
+    # average price
+
+    # yield in the last 12 months
+    from datetime import date, timedelta
+    yield_start_date = date.today() - timedelta(weeks=52)
+    yield_from = yield_start_date.strftime("%Y-%m-%d")
+    # the accound ends with the symbol name
+    ledger_cmd = f'b ^Income and :{symbol}$ -b {yield_from} --flat --no-total'
+    # split separate lines
+    rows = ledger(ledger_cmd).strip().split('\n')
+    for i, item in enumerate(rows):
+        rows[i] = rows[i].strip()
+    result['income'] = rows
+
+    return json.dumps(result)
+
 @app.route('/about')
 def about():
     ''' display some diagnostics '''
@@ -48,10 +79,9 @@ def ledger(parameters):
     import subprocess
     from cashiersync.config import Configuration
 
-    cfg = Configuration()
-
     command = f"ledger {parameters}"
     result = subprocess.run(command, shell=True, encoding="utf-8", capture_output=True)
+    #cfg = Configuration()
     # cwd=cfg.ledger_working_dir
 
     if result.returncode != 0:
