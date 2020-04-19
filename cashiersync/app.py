@@ -46,7 +46,8 @@ def security_details():
     result = {}
 
     # lots
-    lots = ledger(f'b ^Assets and :{symbol}$ --lots --no-total --depth 2')
+    ledger_cmd = f'b ^Assets and :{symbol}$ --lots --no-total --depth 2'
+    lots = ledger(ledger_cmd).split('\n')
     result['lots'] = lots
 
     # average price
