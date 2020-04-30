@@ -12,7 +12,7 @@ from os import path
 setup(
     name="cashiersync",
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    version='1.0.1',
+    version='1.0.2',
     description="Server-side synchronization component for Cashier",
     author="Alen Siljak",
     author_email="cashier@alensiljak.eu.org",
@@ -35,10 +35,10 @@ setup(
         'flask', 'flask_cors',
         'pyyaml', 'pyxdg'
     ],
-    # entry_points={
-    #     'console_scripts': [
-    #         'cashiersync=cashiersync.app:run_server',
-    #     ],
-    # },
+    entry_points={
+        'console_scripts': [
+            'cashiersync=cashiersync.app:run_server',
+        ],
+    },
     include_package_data=True
 )
