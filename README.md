@@ -25,6 +25,7 @@ or
 ### Production
 
 The `cashiersync` executable console script is registered by the setup. This will run the web app.
+This may require the wheel package.
 
 ### Misc
 
