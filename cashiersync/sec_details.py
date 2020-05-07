@@ -25,7 +25,7 @@ class SecurityDetails:
         The main method, which calculates everything.
         '''
         result = {}
-        result['message'] = ''
+        # result['message'] = ''
         # ledger = LedgerExecutor(self.logger)
 
         # lots
@@ -108,25 +108,34 @@ class SecurityDetails:
     def get_total_from_ledger_output(self, output):
         ''' Extract the total value from ledger output '''
         next_line_is_total = False
-        total = None
+        total_line = None
+
+        # Special cases
+        if len(output) == 0:
+            return 0
+        
+        if len(output) == 1:
+            # One-line results don't have totals
+            total_line = output[0]
 
         for i, item in enumerate(output):
             # get total
             if next_line_is_total:
-                total = output[i]
+                total_line = output[i]
                 # self.logger.debug(f'total income for {self.symbol} since {yield_from}: {total}')
             if '------' in output[i]:
                 next_line_is_total = True
 
-        if total is None:
+        if total_line is None:
             raise ValueError(f'No total fetched in {output}')
-        total_numeric = self.extract_total(total)
+
+        total_numeric = self.extract_total(total_line)
         return total_numeric
 
     def extract_total(self, total_line):
         ''' Gets the numeric value of the total from the ledger total line '''
-        # from decimal import Decimal
-
+        #self.logger.debug(total_line)
+        
         # Extract the numeric value of the income total.
         total_parts = total_line.split(' ')
         total_numeric = total_parts[0]
