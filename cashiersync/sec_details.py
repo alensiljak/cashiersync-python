@@ -94,7 +94,7 @@ class SecurityDetails:
         ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat -X {self.currency}'
         output = ledger.run(ledger_cmd)
         output = ledger.split_lines(output)
-        self.logger.debug(f'income lines for {self.symbol}: {output}')
+        #self.logger.debug(f'income lines for {self.symbol}: {output}')
 
         total = self.get_total_from_ledger_output(output)
         return total
