@@ -55,6 +55,8 @@ class SecurityDetails:
         # get the income in the last 12 months
         income_str = self.get_income_balance()
         income = Decimal(income_str)
+        #self.logger.debug(f'{self.symbol} gives `{income_str}` as income string')
+
         # turn into a positive number
         income = abs(income)
 
@@ -92,6 +94,7 @@ class SecurityDetails:
         ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat -X {self.currency}'
         output = ledger.run(ledger_cmd)
         output = ledger.split_lines(output)
+        self.logger.debug(f'income lines for {self.symbol}: {output}')
 
         total = self.get_total_from_ledger_output(output)
         return total
@@ -111,10 +114,13 @@ class SecurityDetails:
         total_line = None
 
         # Special cases
-        if len(output) == 0:
-            return 0
+        # if len(output) == 0:
+        #     return 0
         
         if len(output) == 1:
+            # No income is an array with an empty string ['']
+            if output[0] == '':
+                return "0"
             # One-line results don't have totals
             total_line = output[0]
 
