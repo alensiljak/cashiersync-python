@@ -21,15 +21,20 @@ class SecurityDetails:
         self.currency = currency
     
     def calculate(self):
+        '''
+        The main method, which calculates everything.
+        '''
         result = {}
+        result['message'] = ''
         ledger = LedgerExecutor(self.logger)
 
         # lots
         ledger_cmd = f'b ^Assets and :{self.symbol}$ --lots --no-total --depth 2'
-        lots = ledger.run(ledger_cmd).split('\n')
+        lots = ledger.run(ledger_cmd)
         result['lots'] = lots
 
         # average price
+        result['message'] += 'Avg.Price = N/A'
 
         # yield in the last 12 months
         result['yield'] = self.get_yield()
@@ -46,33 +51,21 @@ class SecurityDetails:
         Calculate the yield in the last 12 months.
         This, of course is affected by the recent purchases!
         '''
-        from datetime import date, timedelta
-
-        ledger = LedgerExecutor(self.logger)
-
-        yield_start_date = date.today() - timedelta(weeks=52)
-        yield_from = yield_start_date.strftime("%Y-%m-%d")
-        
-        # the accound ends with the symbol name
-        ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat -X {self.currency}'
-        next_line_is_total = False
-        total = None
-        # split separate lines and trim.
-        rows = ledger.run(ledger_cmd).strip().split('\n')
-        for i, item in enumerate(rows):
-            rows[i] = rows[i].strip()
-            # get total
-            if next_line_is_total:
-                total = rows[i]
-                self.logger.debug(f'total: {total}')
-            if '------' in rows[i]:
-                next_line_is_total = True
+        from decimal import Decimal
 
         # get the income in the last 12 months
-        # get the current value
-        the_yield = 0
+        income_str = self.get_income_balance()
+        income = Decimal(income_str)
+        # turn into a positive number
+        income = abs(income)
 
-        return the_yield
+        # get the current value
+        value_str = self.get_value_balance()
+        value = Decimal(value_str)
+
+        the_yield = income * 100 / value
+        result = f'{the_yield:.2f}%'
+        return result
 
     def get_income(self):
         from datetime import date, timedelta
@@ -83,9 +76,60 @@ class SecurityDetails:
         ledger = LedgerExecutor(self.logger)
         # the accound ends with the symbol name
         ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat --no-total'
-        # split separate lines
-        rows = ledger.run(ledger_cmd).strip().split('\n')
-        for i, item in enumerate(rows):
-            rows[i] = rows[i].strip()
-
+        rows = ledger.run(ledger_cmd)
         return rows
+
+    def get_income_balance(self):
+        ''' Gets the balance of income for the security '''
+        from datetime import date, timedelta
+        
+        ledger = LedgerExecutor(self.logger)
+
+        yield_start_date = date.today() - timedelta(weeks=52)
+        yield_from = yield_start_date.strftime("%Y-%m-%d")
+        
+        # the accound ends with the symbol name
+        ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat -X {self.currency}'
+        output = ledger.run(ledger_cmd)
+
+        total = self.get_total_from_ledger_output(output)
+        return total
+
+    def get_value_balance(self):
+        ''' Gets the current value of the security holdings in the given currency '''
+        ledger = LedgerExecutor(self.logger)
+        cmd = f"b ^Assets and :{self.symbol}$ -X {self.currency}"
+        output = ledger.run(cmd)
+        value = self.get_total_from_ledger_output(output)
+        return value
+
+    def get_total_from_ledger_output(self, output):
+        ''' Extract the total value from ledger output '''
+        next_line_is_total = False
+        total = None
+
+        for i, item in enumerate(output):
+            # get total
+            if next_line_is_total:
+                total = output[i]
+                # self.logger.debug(f'total income for {self.symbol} since {yield_from}: {total}')
+            if '------' in output[i]:
+                next_line_is_total = True
+
+        total_numeric = self.extract_total(total)
+        return total_numeric
+
+    def extract_total(self, total_line):
+        ''' Gets the numeric value of the total from the ledger total line '''
+        # from decimal import Decimal
+
+        # Extract the numeric value of the income total.
+        total_parts = total_line.split(' ')
+        total_numeric = total_parts[0]
+        #self.logger.debug(f'total: {total_numeric}')
+        # Remove thousand-separator
+        total_numeric = total_numeric.replace(',', '') 
+
+        # result = Decimal(total_numeric)
+        result = total_numeric
+        return result

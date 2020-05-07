@@ -18,12 +18,22 @@ class LedgerExecutor:
         #cfg = Configuration()
         # cwd=cfg.ledger_working_dir
 
-        if self.logger:
-            self.logger.debug(result)
+        # if self.logger:
+        #     self.logger.debug(result)
 
         if result.returncode != 0:
             output = result.stderr
         else:
             output = result.stdout
         
+        output = self.split_lines(output)
+
         return output
+
+    def split_lines(self, output):
+        rows = output.strip().split('\n')
+
+        for i, item in enumerate(rows):
+            rows[i] = rows[i].strip()
+        
+        return rows
