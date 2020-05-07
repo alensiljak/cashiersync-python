@@ -76,6 +76,7 @@ class SecurityDetails:
         # the accound ends with the symbol name
         ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat --no-total'
         rows = ledger.run(ledger_cmd)
+        rows = ledger.split_lines(rows)
         return rows
 
     def get_income_balance(self):
@@ -90,6 +91,7 @@ class SecurityDetails:
         # the accound ends with the symbol name
         ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat -X {self.currency}'
         output = ledger.run(ledger_cmd)
+        output = ledger.split_lines(output)
 
         total = self.get_total_from_ledger_output(output)
         return total
@@ -99,6 +101,7 @@ class SecurityDetails:
         ledger = LedgerExecutor(self.logger)
         cmd = f"b ^Assets and :{self.symbol}$ -X {self.currency}"
         output = ledger.run(cmd)
+        output = ledger.split_lines(output)
         value = self.get_total_from_ledger_output(output)
         return value
 
@@ -115,6 +118,8 @@ class SecurityDetails:
             if '------' in output[i]:
                 next_line_is_total = True
 
+        if total is None:
+            raise ValueError(f'No total fetched in {output}')
         total_numeric = self.extract_total(total)
         return total_numeric
 

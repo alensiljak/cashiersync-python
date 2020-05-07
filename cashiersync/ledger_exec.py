@@ -23,6 +23,7 @@ class LedgerExecutor:
 
         if result.returncode != 0:
             output = result.stderr
+            raise Exception('Ledger error', output)
         else:
             output = result.stdout
         
