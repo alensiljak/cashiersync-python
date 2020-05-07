@@ -26,7 +26,7 @@ class LedgerExecutor:
         else:
             output = result.stdout
         
-        output = self.split_lines(output)
+        #output = self.split_lines(output)
 
         return output
 
