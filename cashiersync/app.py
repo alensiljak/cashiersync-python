@@ -15,7 +15,7 @@ def hello():
 @app.route("/accounts")
 def accounts():
     params = "accounts"
-    ledger = LedgerExecutor()
+    ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
     
     return f'accounts: {result}'
@@ -23,7 +23,7 @@ def accounts():
 @app.route("/balance")
 def balance():
     params = "b --flat --no-total"
-    ledger = LedgerExecutor()
+    ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
     
     return result
@@ -34,7 +34,7 @@ def currentValues():
     currency = request.args.get('currency')
     params = f"b ^{root} -X {currency} --flat --no-total"
 
-    ledger = LedgerExecutor()
+    ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
     
     #return f"current values for {root} in {currency}: {result}"
@@ -47,8 +47,9 @@ def security_details():
     from .sec_details import SecurityDetails
 
     symbol = request.args.get('symbol')
+    currency = request.args.get('currency')
 
-    x = SecurityDetails(symbol)
+    x = SecurityDetails(app.logger, symbol, currency)
     result = x.calculate()
 
     return json.dumps(result)
@@ -65,7 +66,7 @@ def about():
 def run_server():
     """ Available to be called from outside """
     # use_reloader=False port=23948
-    app.run(host='0.0.0.0', threaded=True, use_reloader=False)
+    app.run(host='0.0.0.0', threaded=True, use_reloader=False, debug=True)
     # host='127.0.0.1' host='0.0.0.0'
     # , debug=True
     # Prod setup: 
