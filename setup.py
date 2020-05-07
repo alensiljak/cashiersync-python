@@ -12,7 +12,7 @@ from os import path
 setup(
     name="cashiersync",
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    version='1.1.0',
+    version='1.1.1',
     description="Server-side synchronization component for Cashier",
     author="Alen Siljak",
     author_email="cashier@alensiljak.eu.org",

@@ -34,11 +34,10 @@ class SecurityDetails:
         # result['lots'] = lots
 
         # average price
-        # result['message'] += 'Avg.Price = N/A'
+        # result['avg_price'] += 'N/A'
 
         # yield in the last 12 months
-        # result['yield'] = self.get_yield()
-        result['message'] = self.get_yield()
+        result['yield'] = self.get_yield()
 
         # income (demo)
         # income = self.get_income()
