@@ -1,9 +1,9 @@
 from flask import Flask, request
 from flask_cors import CORS #, cross_origin
 import json
+from .ledger_exec import LedgerExecutor
 
 app = Flask(__name__)
-# moved to the start func to see if it solves 
 CORS(app)
 #cors = CORS(app)
 #app.config['CORS_HEADERS'] = 'Content-Type'
@@ -15,14 +15,16 @@ def hello():
 @app.route("/accounts")
 def accounts():
     params = "accounts"
-    result = ledger(params)
+    ledger = LedgerExecutor()
+    result = ledger.run(params)
     
     return f'accounts: {result}'
 
 @app.route("/balance")
 def balance():
     params = "b --flat --no-total"
-    result = ledger(params)
+    ledger = LedgerExecutor()
+    result = ledger.run(params)
     
     return result
 
@@ -31,7 +33,9 @@ def currentValues():
     root = request.args.get('root')
     currency = request.args.get('currency')
     params = f"b ^{root} -X {currency} --flat --no-total"
-    result = ledger(params)
+
+    ledger = LedgerExecutor()
+    result = ledger.run(params)
     
     #return f"current values for {root} in {currency}: {result}"
     return result
@@ -39,31 +43,13 @@ def currentValues():
 @app.route('/securitydetails')
 def security_details():
     ''' incomplete
-    The idea is to calculate the security details: 
-    - average price (this will come with --average-lot-prices)
-    - yield in the last 12 months
     '''
+    from .sec_details import SecurityDetails
+
     symbol = request.args.get('symbol')
-    result = {}
 
-    # lots
-    ledger_cmd = f'b ^Assets and :{symbol}$ --lots --no-total --depth 2'
-    lots = ledger(ledger_cmd).split('\n')
-    result['lots'] = lots
-
-    # average price
-
-    # yield in the last 12 months
-    from datetime import date, timedelta
-    yield_start_date = date.today() - timedelta(weeks=52)
-    yield_from = yield_start_date.strftime("%Y-%m-%d")
-    # the accound ends with the symbol name
-    ledger_cmd = f'b ^Income and :{symbol}$ -b {yield_from} --flat --no-total'
-    # split separate lines
-    rows = ledger(ledger_cmd).strip().split('\n')
-    for i, item in enumerate(rows):
-        rows[i] = rows[i].strip()
-    result['income'] = rows
+    x = SecurityDetails(symbol)
+    result = x.calculate()
 
     return json.dumps(result)
 
@@ -75,23 +61,6 @@ def about():
     return f"cwd: {cwd}"
 
 ###################################
-
-def ledger(parameters):
-    ''' Execute ledger command '''
-    import subprocess
-    from cashiersync.config import Configuration
-
-    command = f"ledger {parameters}"
-    result = subprocess.run(command, shell=True, encoding="utf-8", capture_output=True)
-    #cfg = Configuration()
-    # cwd=cfg.ledger_working_dir
-
-    if result.returncode != 0:
-        output = result.stderr
-    else:
-        output = result.stdout
-    
-    return output
 
 def run_server():
     """ Available to be called from outside """
