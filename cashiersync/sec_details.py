@@ -26,30 +26,30 @@ class SecurityDetails:
         '''
         result = {}
         result['message'] = ''
-        ledger = LedgerExecutor(self.logger)
+        # ledger = LedgerExecutor(self.logger)
 
         # lots
-        ledger_cmd = f'b ^Assets and :{self.symbol}$ --lots --no-total --depth 2'
-        lots = ledger.run(ledger_cmd)
-        result['lots'] = lots
+        # ledger_cmd = f'b ^Assets and :{self.symbol}$ --lots --no-total --depth 2'
+        # lots = ledger.run(ledger_cmd)
+        # result['lots'] = lots
 
         # average price
-        result['message'] += 'Avg.Price = N/A'
+        # result['message'] += 'Avg.Price = N/A'
 
         # yield in the last 12 months
-        result['yield'] = self.get_yield()
+        # result['yield'] = self.get_yield()
+        result['message'] = self.get_yield()
 
         # income (demo)
-        income = self.get_income()
-        result['income'] = income
-
+        # income = self.get_income()
+        # result['income'] = income
 
         return result
 
     def get_yield(self):
         '''
         Calculate the yield in the last 12 months.
-        This, of course is affected by the recent purchases!
+        This, of course is affected by the recent purchases, which affect the current value!
         '''
         from decimal import Decimal
 

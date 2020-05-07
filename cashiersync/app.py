@@ -42,8 +42,7 @@ def currentValues():
 
 @app.route('/securitydetails')
 def security_details():
-    ''' incomplete
-    '''
+    ''' Displays the security details (analysis) '''
     from .sec_details import SecurityDetails
 
     symbol = request.args.get('symbol')
