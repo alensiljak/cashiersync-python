@@ -42,3 +42,6 @@ class LedgerOutputParser:
             raise ValueError(f'No total fetched in {output}')
 
         return result
+
+    def get_lot_lines(self, output):
+        pass

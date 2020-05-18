@@ -18,7 +18,17 @@ class LotParser:
         output = ledger.run(params)
         output = ledger.split_lines(output)
 
-        parser = LedgerOutputParser()
-        total_lines = parser.get_total_lines(output)
+        # parser = LedgerOutputParser()
+        # total_lines = parser.get_total_lines(output)
 
-        return total_lines
+        #
+        num_lines = len(output)
+        last_line = output[num_lines - 1]
+        if "Assets" in last_line:
+            #position = last_line.find("Assets")
+            #last_line = last_line.substring(0, position)
+            parts = last_line.split("Assets")
+            last_line = parts[0].strip()
+            output[num_lines - 1] = last_line
+
+        return output
