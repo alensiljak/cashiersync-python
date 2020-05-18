@@ -3,26 +3,22 @@ Parse the output for lots and return the array of lots for a symbol
 '''
 
 class LotParser:
-    def __init__(self, logger, symbol):
+    def __init__(self, logger):
         super().__init__()
 
         self.logger = logger
     
     def get_lots(self, symbol):
         from .ledger_exec import LedgerExecutor
+        from .ledger_output_parser import LedgerOutputParser
 
         params = f"b ^Assets and :{symbol}$ --lots"
     
         ledger = LedgerExecutor(self.logger)
-        result = ledger.run(params)
-        result = ledger.split_lines(result)
+        output = ledger.run(params)
+        output = ledger.split_lines(output)
 
-        result = self.extract_lots_from_ledger_output(result)
-        
-        return result
+        parser = LedgerOutputParser()
+        total_lines = parser.get_total_lines(output)
 
-    def extract_lots_from_ledger_output(self, ledger_output):
-        '''
-        Get all the lots from total, unless there is only one account.
-        '''
-        
+        return total_lines

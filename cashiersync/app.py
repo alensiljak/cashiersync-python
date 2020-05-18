@@ -49,7 +49,7 @@ def lots():
     parser = LotParser(app.logger)
     result = parser.get_lots(symbol)
 
-    return result
+    return json.dumps(result)
 
 @app.route('/securitydetails')
 def security_details():
