@@ -16,6 +16,7 @@ class Configuration:
         import yaml
 
         path = self.getConfigPath()
+        content = ''
         with open(path, 'r') as stream:
             try:
                 content = yaml.safe_load(stream)
@@ -43,8 +44,8 @@ class Configuration:
 
     def getTemplate(self):
         return '''# Configuration
+ledger_working_dir: .
         '''
-        #ledger_working_dir:
 
     # @property
     def getConfigDir(self):
@@ -62,4 +63,5 @@ class Configuration:
 
     @property
     def ledger_working_dir(self):
-        return self.config["ledger_working_dir"]
+        value = self.config["ledger_working_dir"]
+        return value

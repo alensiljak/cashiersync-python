@@ -110,31 +110,12 @@ class SecurityDetails:
 
     def get_total_from_ledger_output(self, output):
         ''' Extract the total value from ledger output '''
-        next_line_is_total = False
-        total_line = None
+        from cashiersync.ledger_output_parser import LedgerOutputParser
 
-        # Special cases
-        # if len(output) == 0:
-        #     return 0
-        
-        if len(output) == 1:
-            # No income is an array with an empty string ['']
-            if output[0] == '':
-                return "0"
-            # One-line results don't have totals
-            total_line = output[0]
-
-        for i, item in enumerate(output):
-            # get total
-            if next_line_is_total:
-                total_line = output[i]
-                # self.logger.debug(f'total income for {self.symbol} since {yield_from}: {total}')
-            if '------' in output[i]:
-                next_line_is_total = True
-
-        if total_line is None:
-            raise ValueError(f'No total fetched in {output}')
-
+        parser = LedgerOutputParser()
+        total_line = parser.get_totals(output)
+        self.logger.debug(total_line)
+        print(total_line)
         total_numeric = self.extract_total(total_line)
         return total_numeric
 

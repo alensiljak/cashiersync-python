@@ -13,10 +13,12 @@ class LedgerExecutor:
         import subprocess
         from cashiersync.config import Configuration
 
+        cfg = Configuration()
+        cwd=cfg.ledger_working_dir
+
         command = f"ledger {parameters}"
-        result = subprocess.run(command, shell=True, encoding="utf-8", capture_output=True)
-        #cfg = Configuration()
-        # cwd=cfg.ledger_working_dir
+        result = subprocess.run(command, shell=True, encoding="utf-8", capture_output=True,
+            cwd=cwd)
 
         # if self.logger:
         #     self.logger.debug(result)

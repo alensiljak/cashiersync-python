@@ -40,6 +40,17 @@ def currentValues():
     #return f"current values for {root} in {currency}: {result}"
     return result
 
+@app.route("/lots")
+def lots():
+    from .lots_parser import LotParser
+
+    symbol = request.args.get('symbol')
+
+    parser = LotParser(app.logger)
+    result = parser.get_lots(symbol)
+
+    return result
+
 @app.route('/securitydetails')
 def security_details():
     ''' Displays the security details (analysis) '''
