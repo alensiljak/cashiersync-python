@@ -113,9 +113,8 @@ class SecurityDetails:
         from cashiersync.ledger_output_parser import LedgerOutputParser
 
         parser = LedgerOutputParser()
-        total_line = parser.get_totals(output)
-        self.logger.debug(total_line)
-        print(total_line)
+        total_line = parser.get_total_lines(output)[0]
+        #self.logger.debug(total_line)
         total_numeric = self.extract_total(total_line)
         return total_numeric
 
