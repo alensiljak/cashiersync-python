@@ -64,7 +64,11 @@ class SecurityDetails:
         value_str = self.get_value_balance()
         value = Decimal(value_str)
 
-        the_yield = income * 100 / value
+        if value == 0:
+            the_yield = 0
+        else:
+            the_yield = income * 100 / value
+
         result = f'{the_yield:.2f}%'
         return result
 
