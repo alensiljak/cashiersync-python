@@ -11,8 +11,9 @@ from os import path
 
 setup(
     name="cashiersync",
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     version='1.2.2',
+    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    package_data={"": ["default_config.yaml"]},
     description="Server-side synchronization component for Cashier",
     author="Alen Siljak",
     author_email="cashier@alensiljak.eu.org",
@@ -29,10 +30,10 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    #long_description=long_description,
-    #long_description_content_type="text/markdown",
+    # long_description=long_description,
+    # long_description_content_type="text/markdown",
     install_requires=[
-        'flask', 'flask_cors',
+        'confuse', 'flask', 'flask_cors',
         'pyyaml', 'pyxdg'
     ],
     entry_points={
@@ -40,5 +41,8 @@ setup(
             'cashiersync=cashiersync.app:run_server',
         ],
     },
-    include_package_data=True
+    include_package_data=True,
+    project_urls={
+        "Source Code": "https://gitlab.com/alensiljak/cashier-sync.git"
+    },
 )

@@ -11,21 +11,19 @@ Ledger-cli must be in the path as it will be run to retrieve the data.
 
 Optional: set up a tunnel to your machine so that it is available over the internet.
 `ssh -R 80:localhost:5000 serveo.net`
-
 or 
-
 `ssh -R cashier:80:localhost:5000 serveo.net`
 
+However, since Python runs in Termux, it might be more convenient to run the server component locally (cashier-sync and ledger).
+
 ## Run
-
-### Development
-
-`flask run` from cashiersync folder.
 
 ### Production
 
 The `cashiersync` executable console script is registered by the setup. This will run the web app.
 This may require the wheel package.
+
+The configuration file can be created if the default options are to be modified.
 
 ### Misc
 
@@ -38,10 +36,14 @@ flask run
 
 The code above could be placed into a `cashiersync` executable script in .local/bin folder, for example.
 
-## Running on Mobile Devices
+### Running on Mobile Devices
 
 The server can also run on Android in Termux. All that is needed in such case is to get the ledger book onto the device, possibly using git. 
 
-## Deployment
+## Development
+
+`flask run` from cashiersync folder. Or configure VS Code to run as a Flask application.
+
+### Deployment
 
 See distribute.sh script for the steps.

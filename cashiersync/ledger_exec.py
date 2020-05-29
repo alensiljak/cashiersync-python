@@ -11,7 +11,7 @@ class LedgerExecutor:
     def run(self, parameters):
         ''' Execute ledger command '''
         import subprocess
-        from cashiersync.config import Configuration
+        from cashiersync.config2 import Configuration
 
         cfg = Configuration()
         cwd=cfg.ledger_working_dir

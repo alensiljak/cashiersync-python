@@ -4,7 +4,7 @@ in user's configuration directory.
 '''
 
 
-class Configuration:
+class ConfigurationDeprecated:
     def __init__(self):
         self.config_file_name = "config.yaml"
         self.app_name = "cashiersync"
