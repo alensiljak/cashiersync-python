@@ -71,6 +71,17 @@ def about():
     cwd = os.getcwd()
     return f"cwd: {cwd}"
 
+## Operations
+
+@app.route('/shutdown')
+def shutdown():
+    #app.do_teardown_appcontext()
+
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
 ###################################
 
 def run_server():
