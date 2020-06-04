@@ -33,7 +33,7 @@ setup(
     # long_description=long_description,
     # long_description_content_type="text/markdown",
     install_requires=[
-        'confuse', 'flask', 'flask_cors',
+        'flask', 'flask_cors',
         'pyyaml', 'pyxdg'
     ],
     entry_points={

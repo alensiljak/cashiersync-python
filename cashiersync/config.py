@@ -4,10 +4,11 @@ in user's configuration directory.
 '''
 
 
-class ConfigurationDeprecated:
+class Configuration:
     def __init__(self):
         self.config_file_name = "config.yaml"
         self.app_name = "cashiersync"
+
         self.create_config_file()
         self.config = self.read_config()
 
