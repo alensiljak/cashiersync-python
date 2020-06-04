@@ -39,9 +39,25 @@ class SecurityDetails:
         # yield in the last 12 months
         result['yield'] = self.get_yield()
 
+        # Gain/Loss
+        result['g/l'] = self.get_gainloss()
+
         # income (demo)
         # income = self.get_income()
         # result['income'] = income
+
+        return result
+
+    def get_gainloss(self):
+        ''' Get gain/loss from ledger '''
+        ledger = LedgerExecutor(self.logger)
+        # --collapse = -n
+        # -G = gain/loss
+        ledger_cmd = f'b ^Assets and :{self.symbol}$ -G -n -X {self.currency}'
+        output = ledger.run(ledger_cmd)
+        number = self.get_number_from_collapse_result(output)
+
+        result = f"{number} {self.currency}"
 
         return result
 
@@ -95,6 +111,7 @@ class SecurityDetails:
         yield_from = yield_start_date.strftime("%Y-%m-%d")
         
         # the accound ends with the symbol name
+        # todo: use --collapse instead
         ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat -X {self.currency}'
         output = ledger.run(ledger_cmd)
         output = ledger.split_lines(output)
@@ -136,3 +153,16 @@ class SecurityDetails:
         # result = Decimal(total_numeric)
         result = total_numeric
         return result
+
+    def get_number_from_collapse_result(self, ledger_output: str):
+        ''' Parses a 1-line ledger result, when --collapse is used '''
+        # cleanup
+        ledger_output = ledger_output.strip()
+        # -1,139 EUR  Assets
+        parts = ledger_output.split(' ')
+        assert len(parts) == 4
+
+        number = parts[0]
+        number = number.replace(',', '') 
+
+        return number
