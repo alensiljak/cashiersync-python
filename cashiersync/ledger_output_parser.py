@@ -1,6 +1,8 @@
 '''
 The helper for Ledger output parsing
 '''
+from typing import List
+
 
 class LedgerOutputParser:
     def __init__(self):
@@ -43,5 +45,15 @@ class LedgerOutputParser:
 
         return result
 
-    def get_lot_lines(self, output):
-        pass
+    def remove_blank_values_from_splits(self, split_array: List):
+        ''' Removes the empty valuse from a string split array.
+        Used mostly when separating by double-space '  ', to clean up.
+        '''
+        # while '' in split_array:
+        #     split_array.remove('')
+        res = list(filter(lambda a: a != '', split_array))
+        return res
+
+    def trim_all(self, parts: List) -> List:
+        ''' Trim all elemnts of a list '''
+        return([x.strip() for x in parts])

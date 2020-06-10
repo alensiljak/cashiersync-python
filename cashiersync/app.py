@@ -67,7 +67,7 @@ def security_details():
 @app.route('/transactions')
 def transactions():
     ''' Fetch the transactions in account for the giver period '''
-    from .transactions import Transactions
+    from .transactions import LedgerTransactions
 
     account = request.args.get('account')
     dateFrom = request.args.get('dateFrom')
@@ -77,10 +77,10 @@ def transactions():
     assert dateFrom is not None
     assert dateTo is not None
 
-    tx = Transactions()
-    res = tx.get_transactions(account, dateFrom, dateTo)
+    tx = LedgerTransactions()
+    txs = tx.get_transactions(account, dateFrom, dateTo)
 
-    return json.dumps(res)
+    return json.dumps(txs)
 
 @app.route('/about')
 def about():
