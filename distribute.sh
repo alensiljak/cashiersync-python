@@ -10,7 +10,7 @@ rm -rf dist
 #::pause
 
 #:: Create the binary package.
-python3 setup.py sdist bdist_wheel
+python setup.py sdist bdist_wheel
 
 #::pause
 
