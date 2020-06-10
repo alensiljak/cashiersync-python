@@ -156,6 +156,9 @@ class SecurityDetails:
 
     def get_number_from_collapse_result(self, ledger_output: str):
         ''' Parses a 1-line ledger result, when --collapse is used '''
+        if not ledger_output:
+            return 0
+
         # cleanup
         ledger_output = ledger_output.strip()
         # -1,139 EUR  Assets
