@@ -64,6 +64,24 @@ def security_details():
 
     return json.dumps(result)
 
+@app.route('/transactions')
+def transactions():
+    ''' Fetch the transactions in account for the giver period '''
+    from .transactions import Transactions
+
+    account = request.args.get('account')
+    dateFrom = request.args.get('dateFrom')
+    dateTo = request.args.get('dateTo')
+
+    assert account is not None
+    assert dateFrom is not None
+    assert dateTo is not None
+
+    tx = Transactions()
+    res = tx.get_transactions(account, dateFrom, dateTo)
+
+    return json.dumps(res)
+
 @app.route('/about')
 def about():
     ''' display some diagnostics '''
