@@ -119,6 +119,26 @@ def repo_push():
 
     return output
 
+@app.route('/append', methods=['POST'])
+def append():
+    ''' Append the text to the given (journal) file '''
+    from cashiersync.executor import Executor
+    import os.path
+
+    json = request.get_json()
+    file_path = json['filePath']
+    content = json['content']
+
+    # confirm that the file exists
+    if not os.path.isfile(file_path):
+        raise FileNotFoundError()
+    
+    # save
+    with open(file_path, 'a') as destination:
+        destination.write(content)
+
+    return "Content written"
+
 @app.route('/repo/status')
 def repo_status():
     from cashiersync.executor import Executor
