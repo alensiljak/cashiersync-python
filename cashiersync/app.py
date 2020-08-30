@@ -51,7 +51,7 @@ def lots():
 
     return json.dumps(result)
 
-@app.route('/repopull', methods=['POST'])
+@app.route('/repo/pull', methods=['POST'])
 def repo_pull():
     '''
     Pull the changes in the repository.
@@ -66,6 +66,19 @@ def repo_pull():
     try:
         executor = Executor(app.logger)
         output = executor.run("git pull", repo_path)
+    except Exception as e:
+        output = f'Error: {str(e)}'
+
+    return output
+
+@app.route('/repo/status')
+def repo_status():
+    from cashiersync.executor import Executor
+    
+    repo_path = request.args.get('repoPath')
+    try:
+        executor = Executor(app.logger)
+        output = executor.run("git status", repo_path)
     except Exception as e:
         output = f'Error: {str(e)}'
 
