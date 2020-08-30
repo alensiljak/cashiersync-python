@@ -71,6 +71,26 @@ def repo_pull():
 
     return output
 
+@app.route('/repo/push', methods=['POST'])
+def repo_push():
+    '''
+    Push the changes in the repository.
+    Expects { repoPath: ... } parameter in JSON.
+    '''
+    from cashiersync.executor import Executor
+
+    json = request.get_json()
+    repo_path = json['repoPath']
+
+    # Execute git pull and return all the console results.
+    try:
+        executor = Executor(app.logger)
+        output = executor.run("git push", repo_path)
+    except Exception as e:
+        output = f'Error: {str(e)}'
+
+    return output
+
 @app.route('/repo/status')
 def repo_status():
     from cashiersync.executor import Executor
