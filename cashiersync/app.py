@@ -71,6 +71,34 @@ def repo_pull():
 
     return output
 
+@app.route('/repo/commit', methods=['POST'])
+def repo_commit():
+    '''
+    Pull the changes in the repository.
+    Expects { repoPath: ... } parameter in JSON.
+    '''
+    from cashiersync.executor import Executor
+
+    json = request.get_json()
+    repo_path = json['repoPath']
+    message = json['commitMessage']
+
+    # Execute git pull and return all the console results.
+    try:
+        executor = Executor(app.logger)
+
+        # Add all the changes.
+        command = f"git add ."
+        output = executor.run(command, repo_path)
+
+        # Commit
+        command = f"git commit -m {message}"
+        output += executor.run(command, repo_path)
+    except Exception as e:
+        output = f'Error: {str(e)}'
+
+    return output
+
 @app.route('/repo/push', methods=['POST'])
 def repo_push():
     '''
