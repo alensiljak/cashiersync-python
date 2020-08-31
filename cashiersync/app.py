@@ -161,8 +161,17 @@ def search_tx():
     app.logger.debug(query)
 
     freeText = query['freeText']
+    dateFrom = query['dateFrom']
+    dateTo = query['dateTo']
 
-    params = f"r {freeText}"
+    params = f"r"
+    if freeText:
+        params += f" {freeText}"
+    if dateFrom:
+        params += f" -b {dateFrom}"
+    if dateTo is not None:
+        params += f" -e {dateTo}"
+
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
     return result
