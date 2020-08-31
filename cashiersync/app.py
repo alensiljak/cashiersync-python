@@ -152,6 +152,21 @@ def repo_status():
 
     return output
 
+@app.route('/search', methods=['POST'])
+def search_tx():
+    ''' Search Transactions - Register '''
+    #query = request.args.get('query')
+    json = request.get_json()
+    query = json['query']
+    app.logger.debug(query)
+
+    freeText = query['freeText']
+
+    params = f"r {freeText}"
+    ledger = LedgerExecutor(app.logger)
+    result = ledger.run(params)
+    return result
+
 @app.route('/securitydetails')
 def security_details():
     ''' Displays the security details (analysis) '''
