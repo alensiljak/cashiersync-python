@@ -92,7 +92,7 @@ def repo_commit():
         output = executor.run(command, repo_path)
 
         # Commit
-        command = f"git commit -m {message}"
+        command = f'git commit -m "{message}"'
         output += executor.run(command, repo_path)
     except Exception as e:
         output = f'Error: {str(e)}'
