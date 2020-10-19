@@ -18,7 +18,7 @@ def accounts():
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
     
-    return f'accounts: {result}'
+    return result
 
 @app.route("/balance")
 def balance():
