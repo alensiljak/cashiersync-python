@@ -51,6 +51,14 @@ def lots():
 
     return json.dumps(result)
 
+@app.route('/payees')
+def payees():
+    ''' Send Payees as a simple list '''
+    params = f"payees"
+    ledger = LedgerExecutor(app.logger)
+    result = ledger.run(params)
+    return result
+
 @app.route('/repo/pull', methods=['POST'])
 def repo_pull():
     '''
