@@ -25,3 +25,12 @@ def test_parsing_short_line():
     Parse the secondary posting lines (without a date and payee)
     '''
     line = "                                              Assets:Investments:Broker:Cash Acc                 83.65 EUR                    0"
+
+    tx = parser.get_tx_from_register_line(line, None)
+
+    assert tx is not None
+    assert tx.date == None
+    assert tx.payee == None
+    assert tx.account == "Assets:Investments:Broker:Cash Acc"
+    assert tx.amount == Decimal("83.65")
+    assert tx.currency == "EUR"

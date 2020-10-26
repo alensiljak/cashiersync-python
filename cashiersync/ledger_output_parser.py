@@ -107,10 +107,14 @@ class LedgerOutputParser:
         # Date
         if has_symbol:
             tx.date = date_str
-        else:
+        elif previous_tx is not None:
             tx.date = previous_tx.date
+        else:
+            pass
 
         # Payee
+        if payee_str == '':
+            payee_str = None
         tx.payee = payee_str
 
         # Symbol
@@ -122,8 +126,10 @@ class LedgerOutputParser:
                 index = symbol.index('.')
                 symbol = symbol[0:index]
             tx.symbol = symbol
-        else:
+        elif previous_tx is not None:
             tx.symbol = previous_tx.symbol
+        else:
+            pass
 
         # Type
         account = account_str
@@ -133,6 +139,9 @@ class LedgerOutputParser:
             tx.type = "Dividend"
         if account == "Ex":
             tx.type = "Tax"
+
+        # Account
+        tx.account = account_str
 
         # Amount
         # Get from the end.
