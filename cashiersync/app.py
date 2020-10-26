@@ -191,7 +191,7 @@ def search_tx():
     parser = LedgerOutputParser()
     lines = parser.clean_up_register_output(lines)
 
-    txs = parser.get_tx_from_register(lines)
+    txs = parser.get_rows_from_register(lines)
     #return result
     #encoded = TransactionEncoder().encode(txs)
     encoded = json.dumps(txs, cls=TransactionEncoder)

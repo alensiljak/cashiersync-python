@@ -30,6 +30,7 @@ class Distribution:
     '''
     Represents the register transaction. 
     Also used for IB report comparison.
+    Unused, but remains for the field reference.
     '''
     def __init__(self):
         self.date: str = None
@@ -52,7 +53,7 @@ class Distribution:
 
 class TransactionEncoder(json.JSONEncoder):
     def default(self, object):
-        if isinstance(object, Transaction):
+        if isinstance(object, RegisterRow):
             return object.__dict__
         elif isinstance(object, Decimal):
             return str(object)
