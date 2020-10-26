@@ -81,17 +81,17 @@ class LedgerOutputParser:
     def get_rows_from_register(self, ledger_lines: List[str]) -> List[RegisterRow]:
         ''' Parse raw lines from the ledger register output and get RegisterRow. '''
         txs = []
-        previous_tx: RegisterRow = None
+        # previous_tx: RegisterRow = None
 
         for line in ledger_lines:
-            tx = self.get_row_from_register_line(line, previous_tx)
+            tx = self.get_row_from_register_line(line)
 
             txs.append(tx)
-            previous_tx = tx
+            # previous_tx = tx
 
         return txs
 
-    def get_row_from_register_line(self, line: str, previous_tx: RegisterRow) -> RegisterRow:
+    def get_row_from_register_line(self, line: str) -> RegisterRow:
         ''' Parse one register line into a Transaction object '''
         from decimal import Decimal
 
@@ -105,12 +105,9 @@ class LedgerOutputParser:
         tx = RegisterRow()
 
         # Date
-        if has_symbol:
-            tx.date = date_str
-        elif previous_tx is not None:
-            tx.date = previous_tx.date
-        else:
-            pass
+        if date_str == '':
+            date_str = None
+        tx.date = date_str
 
         # Payee
         if payee_str == '':
@@ -126,10 +123,6 @@ class LedgerOutputParser:
                 index = symbol.index('.')
                 symbol = symbol[0:index]
             tx.symbol = symbol
-        elif previous_tx is not None:
-            tx.symbol = previous_tx.symbol
-        else:
-            pass
 
         # Type
         account = account_str
