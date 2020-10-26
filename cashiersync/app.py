@@ -1,3 +1,4 @@
+from json import encoder
 from flask import Flask, request
 from flask_cors import CORS #, cross_origin
 import json
@@ -164,6 +165,7 @@ def repo_status():
 def search_tx():
     ''' Search Transactions - Register '''
     from cashiersync.ledger_output_parser import LedgerOutputParser
+    from cashiersync.model import TransactionEncoder
 
     #query = request.args.get('query')
     request_json = request.get_json()
@@ -189,8 +191,12 @@ def search_tx():
     parser = LedgerOutputParser()
     lines = parser.clean_up_register_output(lines)
 
+    txs = parser.get_tx_from_register(lines)
     #return result
-    return json.dumps(lines)
+    #encoded = TransactionEncoder().encode(txs)
+    encoded = json.dumps(txs, cls=TransactionEncoder)
+    #return json.dumps(txs)
+    return encoded
 
 @app.route('/securitydetails')
 def security_details():

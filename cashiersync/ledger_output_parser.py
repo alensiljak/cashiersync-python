@@ -2,6 +2,7 @@
 The helper for Ledger output parsing
 '''
 from typing import List
+from cashiersync.model import Transaction
 
 
 class LedgerOutputParser:
@@ -76,3 +77,73 @@ class LedgerOutputParser:
                 lines.append(line)
 
         return lines
+
+    def get_tx_from_register(self, ledger_lines: List[str]) -> List[Transaction]:
+        ''' Parse raw lines from the ledger register output and get Transactions. '''
+        txs = []
+        previous_tx: Transaction = None
+
+        for line in ledger_lines:
+            tx = self.get_tx_from_register_line(line, previous_tx)
+
+            txs.append(tx)
+            previous_tx = tx
+
+        return txs
+
+    def get_tx_from_register_line(self, line: str, previous_tx: Transaction) -> Transaction:
+        ''' Parse one register line into a Transaction object '''
+        from decimal import Decimal
+
+        has_symbol = line[0:1] != " "
+
+        date_str = line[0:10].strip()
+        payee_str = line[11:46].strip()
+        account_str = line[46:85].strip()
+        amount_str = line[85:107].strip()
+            
+        tx = Transaction()
+
+        # Date
+        if has_symbol:
+            tx.date = date_str
+        else:
+            tx.date = previous_tx.date
+
+        # Payee
+        tx.payee = payee_str
+
+        # Symbol
+        if has_symbol:
+            parts = payee_str.split()
+            symbol = parts[0]
+            # We need to remove the exchange from ledger symbols, i.e. EUNY.DE
+            if '.' in symbol:
+                index = symbol.index('.')
+                symbol = symbol[0:index]
+            tx.symbol = symbol
+        else:
+            tx.symbol = previous_tx.symbol
+
+        # Type
+        account = account_str
+        # Get just the first 3 characters.
+        account = account[0: 2: 1]
+        if account == "In":
+            tx.type = "Dividend"
+        if account == "Ex":
+            tx.type = "Tax"
+
+        # Amount
+        # Get from the end.
+        #index = len(parts) - 4
+        parts = amount_str.split()
+        #amount_str = parts[index].replace(',', '')
+        amount_str = parts[0].replace(',', '')
+        tx.amount = Decimal(amount_str)
+        # Currency
+        #index = len(parts) - 3
+        #tx.currency = parts[index]
+        tx.currency = parts[1]
+
+        return tx
