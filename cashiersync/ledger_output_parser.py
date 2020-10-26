@@ -78,20 +78,20 @@ class LedgerOutputParser:
 
         return lines
 
-    def get_tx_from_register(self, ledger_lines: List[str]) -> List[RegisterRow]:
+    def get_rows_from_register(self, ledger_lines: List[str]) -> List[RegisterRow]:
         ''' Parse raw lines from the ledger register output and get RegisterRow. '''
         txs = []
         previous_tx: RegisterRow = None
 
         for line in ledger_lines:
-            tx = self.get_tx_from_register_line(line, previous_tx)
+            tx = self.get_row_from_register_line(line, previous_tx)
 
             txs.append(tx)
             previous_tx = tx
 
         return txs
 
-    def get_tx_from_register_line(self, line: str, previous_tx: RegisterRow) -> RegisterRow:
+    def get_row_from_register_line(self, line: str, previous_tx: RegisterRow) -> RegisterRow:
         ''' Parse one register line into a Transaction object '''
         from decimal import Decimal
 
