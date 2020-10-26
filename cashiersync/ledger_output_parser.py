@@ -57,3 +57,22 @@ class LedgerOutputParser:
     def trim_all(self, parts: List) -> List:
         ''' Trim all elemnts of a list '''
         return([x.strip() for x in parts])
+
+    def clean_up_register_output(self, report: List[str]) -> List[str]:
+        ''' 
+        Clean-up the ledger register report.
+        The report variable is a list of lines.
+        '''
+        # eliminate useless lines
+        lines = []
+        for line in report:
+            if line == '':
+                pass
+            # Check the account line. If empty, skip. This is just the running total.
+            elif line[50] == " ":
+                # skip
+                pass
+            else:
+                lines.append(line)
+
+        return lines

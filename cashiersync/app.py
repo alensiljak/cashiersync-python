@@ -163,9 +163,11 @@ def repo_status():
 @app.route('/search', methods=['POST'])
 def search_tx():
     ''' Search Transactions - Register '''
+    from cashiersync.ledger_output_parser import LedgerOutputParser
+
     #query = request.args.get('query')
-    json = request.get_json()
-    query = json['query']
+    request_json = request.get_json()
+    query = request_json['query']
     app.logger.debug(query)
 
     freeText = query['freeText']
@@ -182,7 +184,13 @@ def search_tx():
 
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
-    return result
+
+    lines = result.split('\n')
+    parser = LedgerOutputParser()
+    lines = parser.clean_up_register_output(lines)
+
+    #return result
+    return json.dumps(lines)
 
 @app.route('/securitydetails')
 def security_details():
