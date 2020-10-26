@@ -2,7 +2,7 @@
 The helper for Ledger output parsing
 '''
 from typing import List
-from cashiersync.model import Transaction
+from cashiersync.model import RegisterRow
 
 
 class LedgerOutputParser:
@@ -78,10 +78,10 @@ class LedgerOutputParser:
 
         return lines
 
-    def get_tx_from_register(self, ledger_lines: List[str]) -> List[Transaction]:
-        ''' Parse raw lines from the ledger register output and get Transactions. '''
+    def get_tx_from_register(self, ledger_lines: List[str]) -> List[RegisterRow]:
+        ''' Parse raw lines from the ledger register output and get RegisterRow. '''
         txs = []
-        previous_tx: Transaction = None
+        previous_tx: RegisterRow = None
 
         for line in ledger_lines:
             tx = self.get_tx_from_register_line(line, previous_tx)
@@ -91,7 +91,7 @@ class LedgerOutputParser:
 
         return txs
 
-    def get_tx_from_register_line(self, line: str, previous_tx: Transaction) -> Transaction:
+    def get_tx_from_register_line(self, line: str, previous_tx: RegisterRow) -> RegisterRow:
         ''' Parse one register line into a Transaction object '''
         from decimal import Decimal
 
@@ -102,7 +102,7 @@ class LedgerOutputParser:
         account_str = line[46:85].strip()
         amount_str = line[85:107].strip()
             
-        tx = Transaction()
+        tx = RegisterRow()
 
         # Date
         if has_symbol:

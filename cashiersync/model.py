@@ -6,7 +6,7 @@ import json
 from decimal import Decimal
 
 
-class Transaction:
+class RegisterRow:
     '''
     Represents the register transaction. 
     Also used for IB report comparison.
