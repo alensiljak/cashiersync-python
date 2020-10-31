@@ -238,7 +238,7 @@ def xact():
         date_param = query['date']
         params += date_param + ' '
     if 'payee' in query:
-        params += f'@{query["payee"]} '
+        params += f'@"{query["payee"]}" '
     if 'freeText' in query:
         free_text = query['freeText']
         params += free_text
