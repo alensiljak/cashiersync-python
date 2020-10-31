@@ -232,9 +232,16 @@ def transactions():
 @app.route('/xact', methods=['POST'])
 def xact():
     query = request.get_json()
-    free_text = query['freeText']
+    params = 'xact '
 
-    params = f'xact {free_text}'
+    if 'date' in query:
+        date_param = query['date']
+        params += date_param + ' '
+    if 'freeText' in query:
+        free_text = query['freeText']
+        params += free_text
+
+    #params = f'xact {date_param} {free_text}'
 
     ledger = LedgerExecutor(app.logger)
     try:
