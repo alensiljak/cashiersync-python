@@ -229,6 +229,18 @@ def transactions():
 
     return json.dumps(txs)
 
+@app.route('/xact', methods=['POST'])
+def xact():
+    query = request.get_json()
+    free_text = query['freeText']
+
+    params = f'xact {free_text}'
+
+    ledger = LedgerExecutor(app.logger)
+    result = ledger.run(params)
+
+    return result
+
 @app.route('/about')
 def about():
     ''' display some diagnostics '''
