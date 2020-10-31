@@ -237,7 +237,10 @@ def xact():
     params = f'xact {free_text}'
 
     ledger = LedgerExecutor(app.logger)
-    result = ledger.run(params)
+    try:
+        result = ledger.run(params)
+    except Exception as error:
+        result = str(error)
 
     return result
 
