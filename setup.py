@@ -11,7 +11,7 @@ from os import path
 
 setup(
     name="cashiersync",
-    version='2.6.4',
+    version='2.6.5',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     package_data={"": ["default_config.yaml"]},
     description="Server-side synchronization component for Cashier",

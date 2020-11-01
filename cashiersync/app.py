@@ -167,22 +167,23 @@ def search_tx():
     from cashiersync.ledger_output_parser import LedgerOutputParser
     from cashiersync.model import TransactionEncoder
 
-    #query = request.args.get('query')
-    request_json = request.get_json()
-    query = request_json['query']
+    query = request.get_json()
     app.logger.debug(query)
 
-    freeText = query['freeText']
     dateFrom = query['dateFrom']
     dateTo = query['dateTo']
+    payee = query['payee']
+    freeText = query['freeText']
 
     params = f"r"
-    if freeText:
-        params += f" {freeText}"
     if dateFrom:
         params += f" -b {dateFrom}"
     if dateTo is not None:
         params += f" -e {dateTo}"
+    if payee:
+        params += f' @"{payee}"'
+    if freeText:
+        params += f" {freeText}"
 
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
