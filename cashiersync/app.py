@@ -1,6 +1,6 @@
 from json import encoder
 from flask import Flask, request
-from flask_cors import CORS #, cross_origin
+from flask_cors import CORS  # , cross_origin
 import json
 from .ledger_exec import LedgerExecutor
 
@@ -9,25 +9,29 @@ CORS(app)
 #cors = CORS(app)
 #app.config['CORS_HEADERS'] = 'Content-Type'
 
+
 @app.route("/")
 def hello():
     return "Hello World!"
+
 
 @app.route("/accounts")
 def accounts():
     params = "accounts"
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
-    
+
     return result
+
 
 @app.route("/balance")
 def balance():
     params = "b --flat --no-total"
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
-    
+
     return result
+
 
 @app.route("/currentValues")
 def currentValues():
@@ -37,9 +41,10 @@ def currentValues():
 
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
-    
-    #return f"current values for {root} in {currency}: {result}"
+
+    # return f"current values for {root} in {currency}: {result}"
     return result
+
 
 @app.route("/lots")
 def lots():
@@ -52,6 +57,7 @@ def lots():
 
     return json.dumps(result)
 
+
 @app.route('/payees')
 def payees():
     ''' Send Payees as a simple list '''
@@ -59,6 +65,7 @@ def payees():
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
     return result
+
 
 @app.route('/search', methods=['POST'])
 def search_tx():
@@ -74,15 +81,15 @@ def search_tx():
     payee = query['payee']
     freeText = query['freeText']
 
-    params = f"r"
+    params = f"r "
     if dateFrom:
-        params += f" -b {dateFrom}"
+        params += f'-b {dateFrom}'
     if dateTo is not None:
-        params += f" -e {dateTo}"
+        params += f'-e {dateTo}'
     if payee:
-        params += f' @"{payee}"'
+        params += f'@"{payee}"'
     if freeText:
-        params += f" {freeText}"
+        params += f'{freeText}'
 
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
@@ -92,11 +99,12 @@ def search_tx():
     lines = parser.clean_up_register_output(lines)
 
     txs = parser.get_rows_from_register(lines)
-    #return result
+    # return result
     #encoded = TransactionEncoder().encode(txs)
     encoded = json.dumps(txs, cls=TransactionEncoder)
-    #return json.dumps(txs)
+    # return json.dumps(txs)
     return encoded
+
 
 @app.route('/securitydetails')
 def security_details():
@@ -110,6 +118,7 @@ def security_details():
     result = x.calculate()
 
     return json.dumps(result)
+
 
 @app.route('/transactions')
 def transactions():
@@ -128,6 +137,7 @@ def transactions():
     txs = tx.get_transactions(account, dateFrom, dateTo)
 
     return json.dumps(txs)
+
 
 @app.route('/xact', methods=['POST'])
 def xact():
@@ -153,6 +163,7 @@ def xact():
 
     return result
 
+
 @app.route('/about')
 def about():
     ''' display some diagnostics '''
@@ -160,11 +171,12 @@ def about():
     cwd = os.getcwd()
     return f"cwd: {cwd}"
 
-## Operations
+# Operations
+
 
 @app.route('/shutdown')
 def shutdown():
-    #app.do_teardown_appcontext()
+    # app.do_teardown_appcontext()
 
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
@@ -173,13 +185,14 @@ def shutdown():
 
 ###################################
 
+
 def run_server():
     """ Available to be called from outside """
     # use_reloader=False port=23948
     app.run(host='0.0.0.0', threaded=True, use_reloader=False, debug=True)
     # host='127.0.0.1' host='0.0.0.0'
     # , debug=True
-    # Prod setup: 
+    # Prod setup:
     # debug=False
 
 
