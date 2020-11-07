@@ -21,7 +21,12 @@ def accounts():
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
 
-    return result
+    lines = result.split('\n')
+    # clean-up blank lines
+    clean_lines = [x for x in lines if x]
+    output = json.dumps(clean_lines)
+
+    return output
 
 
 @app.route("/balance")
