@@ -81,15 +81,15 @@ def search_tx():
     payee = query['payee']
     freeText = query['freeText']
 
-    params = f"r "
+    params = f'r '
     if dateFrom:
-        params += f'-b {dateFrom}'
+        params += f'-b {dateFrom} '
     if dateTo is not None:
-        params += f'-e {dateTo}'
+        params += f'-e {dateTo} '
     if payee:
-        params += f'@"{payee}"'
+        params += f'@"{payee}" '
     if freeText:
-        params += f'{freeText}'
+        params += f'{freeText} '
 
     ledger = LedgerExecutor(app.logger)
     result = ledger.run(params)
