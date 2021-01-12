@@ -12,7 +12,7 @@ class LotParser:
         from .ledger_exec import LedgerExecutor
         from .ledger_output_parser import LedgerOutputParser
 
-        params = f"b ^Assets and :{symbol}$ --lots"
+        params = f"b ^Assets and :{symbol}$ --lots --no-total --collapse"
     
         ledger = LedgerExecutor(self.logger)
         output = ledger.run(params)
