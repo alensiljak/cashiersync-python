@@ -4,6 +4,8 @@ from flask.helpers import make_response, send_file
 from flask.wrappers import Response
 from flask_cors import CORS  # , cross_origin
 import json
+
+from yaml import parse
 from .ledger_exec import LedgerExecutor
 
 app = Flask(__name__)
@@ -19,7 +21,7 @@ def hello():
 
 @app.route('/hello')
 def hello_img():
-    # Returns an image, can be used with <img> element to check online status
+    # Returns an image, can be used with <img> element to check online status.
 
     import io
     import base64
@@ -64,15 +66,38 @@ def balance():
 
 @app.route("/currentValues")
 def currentValues():
+    '''
+    Current values of accounts under the given root account and 
+    in the requested currency.
+    Used for Asset Allocation to get investment accounts balances.
+    '''
     root = request.args.get('root')
     currency = request.args.get('currency')
     params = f"b ^{root} -X {currency} --flat --no-total"
 
     ledger = LedgerExecutor(app.logger)
-    result = ledger.run(params)
+    ledger_output = ledger.run(params)
 
-    # return f"current values for {root} in {currency}: {result}"
-    return result
+    # Parse and convert to JSON.
+    rows = ledger_output.split('\n')
+    parsed = {}
+    for row in rows:
+        row = row.strip()
+        # ignore empty rows
+        if row == '':
+            continue
+        # split at the root account name
+        index = row.index(root)
+        balance = row[0:index]
+        balance = balance.strip()
+        account = row[index:]
+        account = account.strip()
+        
+        parsed[account] = balance
+
+    json_output = json.dumps(parsed)
+
+    return json_output
 
 
 @app.route("/lots")
