@@ -61,3 +61,24 @@ class TransactionEncoder(json.JSONEncoder):
             # call base class implementation which takes care of
             # raising exceptions for unsupported types
             return json.JSONEncoder.default(self, object)
+
+
+class Lot:
+    def __init__(self):
+        self.quantity = 0
+        self.symbol = ''
+        self.price = 0
+        self.currency = None
+        self.date = None
+
+    def __repr__(self):
+        # return { 'quantity': self.quantity, 'symbol': self.symbol, 'price': self.price,
+        #     'currency': self.currency, 'date': self.date }
+        quantity = f'{self.quantity:>5}'
+        symbol = f"{str(self.symbol):<5}"
+
+        #value = f"{self.value:>6}"
+        return f'<Lot ({quantity} {symbol}, {self.price} {self.currency}, {self.date})>'
+
+    def __str__(self):
+        return (f'Lot: {self.quantity} {self.symbol} @ {self.price} {self.currency} on {self.date}')
