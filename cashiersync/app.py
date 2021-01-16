@@ -128,7 +128,8 @@ def search_tx():
     from cashiersync.model import TransactionEncoder
 
     query = request.get_json()
-    app.logger.debug(query)
+    #app.logger.debug(query)
+    assert query is not None
 
     dateFrom = query['dateFrom']
     dateTo = query['dateTo']

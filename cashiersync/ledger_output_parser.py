@@ -95,7 +95,7 @@ class LedgerOutputParser:
         ''' Parse one register line into a Transaction object '''
         from decimal import Decimal
 
-        has_symbol = line[0:1] != " "
+        has_symbol = line[0:1] != ' '
 
         date_str = line[0:10].strip()
         payee_str = line[11:46].strip()
@@ -138,14 +138,12 @@ class LedgerOutputParser:
 
         # Amount
         # Get from the end.
-        #index = len(parts) - 4
         parts = amount_str.split()
-        #amount_str = parts[index].replace(',', '')
+        assert len(parts) == 2
+
         amount_str = parts[0].replace(',', '')
         tx.amount = Decimal(amount_str)
         # Currency
-        #index = len(parts) - 3
-        #tx.currency = parts[index]
         tx.currency = parts[1]
 
         return tx
