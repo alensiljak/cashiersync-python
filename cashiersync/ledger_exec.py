@@ -8,7 +8,7 @@ class LedgerExecutor:
         super().__init__()
         self.logger = logger
 
-    def run(self, parameters):
+    def run(self, parameters) -> str:
         ''' Execute ledger command '''
         import subprocess
         from cashiersync.config import Configuration

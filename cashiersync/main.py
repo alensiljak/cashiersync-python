@@ -1,27 +1,30 @@
-from json import encoder
-from flask import Flask, request
-from flask.helpers import make_response, send_file
-from flask.wrappers import Response
-from flask_cors import CORS  # , cross_origin
-import json
-
+from fastapi import Body, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from yaml import parse
 from .ledger_exec import LedgerExecutor
+import logging
 
-app = Flask(__name__)
-CORS(app)
-#cors = CORS(app)
-#app.config['CORS_HEADERS'] = 'Content-Type'
+logger = logging.getLogger("uvicorn.error")
 
+app = FastAPI()
 
-@app.route("/")
-def hello():
+# CORS
+# origins = [
+#     'http://localhost:5000',
+#     'http://0.0.0.0:5000'
+# ]
+app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_credentials=True,
+    allow_methods=['*'], allow_headers=['*'])
+
+@app.get("/")
+async def hello():
     return "Hello World!"
 
 
-@app.route('/hello')
-def hello_img():
-    # Returns an image, can be used with <img> element to check online status.
+@app.get('/hello')
+async def hello_img():
+    ''' Returns an image, can be used with <img> element to check online status. '''
 
     import io
     import base64
@@ -35,50 +38,47 @@ def hello_img():
     
     #response = make_response(buf)
     wrapper = FileWrapper(buf)
-    response = Response(wrapper, mimetype='image/png', direct_passthrough=True)
+    response = StreamingResponse(wrapper, media_type='image/png')
     
     return response
-    #return send_file(buf, attachment_filename='hello.png', mimetype='image/png')
 
 
-@app.route("/accounts")
+@app.get("/accounts")
 def accounts():
     params = "accounts"
-    ledger = LedgerExecutor(app.logger)
+    ledger = LedgerExecutor(logger)
     result = ledger.run(params)
 
     lines = result.split('\n')
     # clean-up blank lines
     clean_lines = [x for x in lines if x]
-    output = json.dumps(clean_lines)
+    output = clean_lines
 
     return output
 
 
-@app.route("/balance")
+@app.get("/balance")
 def balance():
     params = "b --flat --no-total"
-    ledger = LedgerExecutor(app.logger)
+    ledger = LedgerExecutor(logger)
     result = ledger.run(params)
 
     return result
 
 
-@app.route("/currentValues")
-def currentValues():
+@app.get("/currentValues")
+def currentValues(root: str, currency: str):
     '''
     Current values of accounts under the given root account and 
     in the requested currency.
     Used for Asset Allocation to get investment accounts balances.
     '''
-    root = request.args.get('root')
-    currency = request.args.get('currency')
     params = f"b ^{root} -X {currency} --flat --no-total"
 
-    ledger = LedgerExecutor(app.logger)
+    ledger = LedgerExecutor(logger)
     ledger_output = ledger.run(params)
 
-    # Parse and convert to JSON.
+    # Parse
     rows = ledger_output.split('\n')
     parsed = {}
     for row in rows:
@@ -95,40 +95,34 @@ def currentValues():
         
         parsed[account] = balance
 
-    json_output = json.dumps(parsed)
-
-    return json_output
+    return parsed
 
 
-@app.route("/lots")
-def lots():
+@app.get("/lots")
+def lots(symbol: str):
     from .lots_parser import LotParser
 
-    symbol = request.args.get('symbol')
-
-    parser = LotParser(app.logger)
+    parser = LotParser(logger)
     result = parser.get_lots(symbol)
 
-    return json.dumps(result)
+    return result
 
 
-@app.route('/payees')
+@app.get('/payees')
 def payees():
     ''' Send Payees as a simple list '''
     params = f"payees"
-    ledger = LedgerExecutor(app.logger)
+    ledger = LedgerExecutor(logger)
     result = ledger.run(params)
     return result
 
 
-@app.route('/search', methods=['POST'])
-def search_tx():
+@app.post('/search')
+async def search_tx(query: dict = Body(...)):
     ''' Search Transactions - Register '''
     from cashiersync.ledger_output_parser import LedgerOutputParser
-    from cashiersync.model import TransactionEncoder
 
-    query = request.get_json()
-    #app.logger.debug(query)
+    logger.debug(query)
     assert query is not None
 
     dateFrom = query['dateFrom']
@@ -146,7 +140,11 @@ def search_tx():
     if freeText:
         params += f'{freeText} '
 
-    ledger = LedgerExecutor(app.logger)
+    # Do we have any parameters?
+    if params == f'r ':
+        return {'message': 'No parameters sent!'}
+
+    ledger = LedgerExecutor(logger)
     result = ledger.run(params)
 
     lines = result.split('\n')
@@ -154,35 +152,33 @@ def search_tx():
     lines = parser.clean_up_register_output(lines)
 
     txs = parser.get_rows_from_register(lines)
-    # return result
-    #encoded = TransactionEncoder().encode(txs)
-    encoded = json.dumps(txs, cls=TransactionEncoder)
-    # return json.dumps(txs)
-    return encoded
+
+    return txs
 
 
-@app.route('/securitydetails')
-def security_details():
+@app.get('/securitydetails')
+def security_details(symbol: str, currency: str):
     ''' Displays the security details (analysis) '''
     from .sec_details import SecurityDetails
 
-    symbol = request.args.get('symbol')
-    currency = request.args.get('currency')
+    # symbol = request.args.get('symbol')
+    # currency = request.args.get('currency')
+    logger.debug(f'parameters: {symbol}, {currency}')
 
-    x = SecurityDetails(app.logger, symbol, currency)
+    x = SecurityDetails(logger, symbol, currency)
     result = x.calculate()
 
-    return json.dumps(result)
+    return result
 
 
-@app.route('/transactions')
-def transactions():
+@app.get('/transactions')
+def transactions(account: str, dateFrom: str, dateTo: str):
     ''' Fetch the transactions in account for the giver period '''
     from .transactions import LedgerTransactions
 
-    account = request.args.get('account')
-    dateFrom = request.args.get('dateFrom')
-    dateTo = request.args.get('dateTo')
+    # account = request.args.get('account')
+    # dateFrom = request.args.get('dateFrom')
+    # dateTo = request.args.get('dateTo')
 
     assert account is not None
     assert dateFrom is not None
@@ -191,12 +187,13 @@ def transactions():
     tx = LedgerTransactions()
     txs = tx.get_transactions(account, dateFrom, dateTo)
 
-    return json.dumps(txs)
+    return txs
 
 
-@app.route('/xact', methods=['POST'])
-def xact():
-    query = request.get_json()
+@app.post('/xact')
+async def xact(query: dict = Body(...)):
+    # query = request.get_json()
+    logger.debug(f'query={query}')
     params = 'xact '
 
     if 'date' in query:
@@ -208,9 +205,9 @@ def xact():
         free_text = query['freeText']
         params += free_text
 
-    #params = f'xact {date_param} {free_text}'
+    assert params != 'xact '
 
-    ledger = LedgerExecutor(app.logger)
+    ledger = LedgerExecutor(logger)
     try:
         result = ledger.run(params)
     except Exception as error:
@@ -219,7 +216,7 @@ def xact():
     return result
 
 
-@app.route('/about')
+@app.get('/about')
 def about():
     ''' display some diagnostics '''
     import os
@@ -228,31 +225,28 @@ def about():
 
 # Operations
 
+# @app.get('/shutdown')
+# def shutdown():
+#     # app.do_teardown_appcontext()
 
-@app.route('/shutdown')
-def shutdown():
-    # app.do_teardown_appcontext()
-
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
+#     func = request.environ.get('werkzeug.server.shutdown')
+#     if func is None:
+#         raise RuntimeError('Not running with the Werkzeug Server')
+#     func()
 
 ###################################
 
 
 def run_server():
-    """ Available to be called from outside """
-    # use_reloader=False port=23948
-    app.run(host='0.0.0.0', threaded=True, use_reloader=False, debug=True)
-    # host='127.0.0.1' host='0.0.0.0'
-    # , debug=True
+    ''' Available to be called from outside, i.e. console scripts in setup. '''
     # Prod setup:
     # debug=False
+    import uvicorn
+    uvicorn.run("cashiersync.main:app", host="0.0.0.0", port=5000)
+    # log_level='debug'
+    # log_level="info"
 
 
 ##################################################################################
 if __name__ == '__main__':
-    # Use debug=True to enable template reloading while the app is running.
-    # debug=True <= this is now controlled in config.py.
     run_server()

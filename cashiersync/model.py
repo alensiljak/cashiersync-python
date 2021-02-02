@@ -51,16 +51,16 @@ class Distribution:
         return json.dumps(self, default=lambda o: o.__dict__)
 
 
-class TransactionEncoder(json.JSONEncoder):
-    def default(self, object):
-        if isinstance(object, RegisterRow):
-            return object.__dict__
-        elif isinstance(object, Decimal):
-            return str(object)
-        else:
-            # call base class implementation which takes care of
-            # raising exceptions for unsupported types
-            return json.JSONEncoder.default(self, object)
+# class TransactionEncoder(json.JSONEncoder):
+#     def default(self, object):
+#         if isinstance(object, RegisterRow):
+#             return object.__dict__
+#         elif isinstance(object, Decimal):
+#             return str(object)
+#         else:
+#             # call base class implementation which takes care of
+#             # raising exceptions for unsupported types
+#             return json.JSONEncoder.default(self, object)
 
 
 class Lot:

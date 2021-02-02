@@ -9,6 +9,8 @@ It is written in Python and is available for installation via pip (PyPi).
 Run `cashiersync` from the folder which is setup for use with ledger. Having a configured .ledgerrc is useful, to point to the ledger files (book, prices, etc.) you want to use.
 Ledger-cli must be in the path as it will be run to retrieve the data.
 
+### Tunnel
+
 Optional: set up a tunnel to your machine so that it is available over the internet.
 `ssh -R 80:localhost:5000 serveo.net`
 or 
@@ -17,6 +19,10 @@ or
 However, since Python runs in Termux, it might be more convenient to run the server component locally (cashier-sync and ledger).
 
 ## Run
+
+### FastAPI and Uvicorn
+
+`uvicorn cashiersync.main:app`
 
 ### Production
 

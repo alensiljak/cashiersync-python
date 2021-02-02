@@ -16,7 +16,7 @@ Potentially destructive, therefore removed from the API.
 
 #     # Execute git pull and return all the console results.
 #     try:
-#         executor = Executor(app.logger)
+#         executor = Executor(logger)
 #         output = executor.run("git pull", repo_path)
 #     except Exception as e:
 #         output = f'Error: {str(e)}'
@@ -37,7 +37,7 @@ Potentially destructive, therefore removed from the API.
 
 #     # Execute git pull and return all the console results.
 #     try:
-#         executor = Executor(app.logger)
+#         executor = Executor(logger)
 
 #         # Add all the changes.
 #         command = f"git add ."
@@ -64,7 +64,7 @@ Potentially destructive, therefore removed from the API.
 
 #     # Execute git pull and return all the console results.
 #     try:
-#         executor = Executor(app.logger)
+#         executor = Executor(logger)
 #         output = executor.run("git push", repo_path)
 #     except Exception as e:
 #         output = f'Error: {str(e)}'
@@ -97,7 +97,7 @@ Potentially destructive, therefore removed from the API.
     
 #     repo_path = request.args.get('repoPath')
 #     try:
-#         executor = Executor(app.logger)
+#         executor = Executor(logger)
 #         output = executor.run("git status", repo_path)
 #     except Exception as e:
 #         output = f'Error: {str(e)}'
