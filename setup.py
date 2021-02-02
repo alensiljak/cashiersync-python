@@ -11,7 +11,7 @@ from os import path
 
 setup(
     name="cashiersync",
-    version='3.0.0',
+    version='3.0.1',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     package_data={"": ["default_config.yaml"]},
     description="Server-side synchronization component for Cashier",
@@ -33,7 +33,7 @@ setup(
     # long_description=long_description,
     # long_description_content_type="text/markdown",
     install_requires=[
-        'fastapi', 'pyyaml', 'pyxdg'
+        'fastapi', 'pyyaml', 'pyxdg', 'uvicorn'
     ],
     entry_points={
         'console_scripts': [
