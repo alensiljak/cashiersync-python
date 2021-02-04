@@ -28,7 +28,6 @@ async def hello_img():
 
     import io
     import base64
-    from werkzeug.wsgi import FileWrapper
     from flask import Response
 
     # Base64 encoded pixel
