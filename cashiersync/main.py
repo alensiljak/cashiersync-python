@@ -28,16 +28,13 @@ async def hello_img():
 
     import io
     import base64
-    from flask import Response
 
     # Base64 encoded pixel
     pixelEncoded = b'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
     pixel = base64.b64decode(pixelEncoded)
     buf = io.BytesIO(pixel)
     
-    #response = make_response(buf)
-    wrapper = FileWrapper(buf)
-    response = StreamingResponse(wrapper, media_type='image/png')
+    response = StreamingResponse(buf, media_type='image/png')
     
     return response
 

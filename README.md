@@ -31,24 +31,13 @@ This may require the wheel package.
 
 The configuration file can be created if the default options are to be modified.
 
-### Misc
-
-In some cases, when the app was run through `cashiersync` entry point, the CORS was not initialized, but when run with `flask run`, it was. In that case, run:
-
-```
-export FLASK_APP=cashiersync.app
-flask run
-```
-
-The code above could be placed into a `cashiersync` executable script in .local/bin folder, for example.
-
 ### Running on Mobile Devices
 
 The server can also run on Android in Termux. All that is needed in such case is to get the ledger book onto the device, possibly using git. 
 
 ## Development
 
-`flask run` from cashiersync folder. Or configure VS Code to run as a Flask application.
+Run uvicorn.
 
 ### Deployment
 
