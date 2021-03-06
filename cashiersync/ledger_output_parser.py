@@ -81,19 +81,24 @@ class LedgerOutputParser:
     def get_rows_from_register(self, ledger_lines: List[str]) -> List[RegisterRow]:
         ''' Parse raw lines from the ledger register output and get RegisterRow. '''
         txs = []
-        # previous_tx: RegisterRow = None
+        # remember the header row, which contains the medatada: date, symbol.
+        prev_row = None
 
         for line in ledger_lines:
-            tx = self.get_row_from_register_line(line)
+            tx = self.get_row_from_register_line(line, prev_row)
+
+            if(tx.date):
+                prev_row = tx
 
             txs.append(tx)
-            # previous_tx = tx
 
         return txs
 
-    def get_row_from_register_line(self, line: str) -> RegisterRow:
+    def get_row_from_register_line(self, line: str, header: RegisterRow) -> RegisterRow:
         ''' Parse one register line into a Transaction object '''
         from decimal import Decimal
+
+        # header is the transaction with the date (and other metadata?)
 
         has_symbol = line[0:1] != ' '
 
@@ -106,12 +111,14 @@ class LedgerOutputParser:
 
         # Date
         if date_str == '':
-            date_str = None
+            #date_str = None
+            date_str = header.date
         tx.date = date_str
 
         # Payee
         if payee_str == '':
-            payee_str = None
+            # payee_str = None
+            payee_str = header.payee
         tx.payee = payee_str
 
         # Symbol
@@ -123,6 +130,8 @@ class LedgerOutputParser:
                 index = symbol.index('.')
                 symbol = symbol[0:index]
             tx.symbol = symbol
+        else:
+            tx.symbol = header.symbol
 
         # Type
         account = account_str
