@@ -157,12 +157,10 @@ def security_details(symbol: str, currency: str):
     ''' Displays the security details (analysis) '''
     from .sec_details import SecurityDetails
 
-    # symbol = request.args.get('symbol')
-    # currency = request.args.get('currency')
-    logger.debug(f'parameters: {symbol}, {currency}')
+    logger.debug('parameters: %s, %s', symbol, currency)
 
-    x = SecurityDetails(logger, symbol, currency)
-    result = x.calculate()
+    sec_details = SecurityDetails(logger, symbol, currency)
+    result = sec_details.calculate()
 
     return result
 
@@ -171,10 +169,6 @@ def security_details(symbol: str, currency: str):
 def transactions(account: str, dateFrom: str, dateTo: str):
     ''' Fetch the transactions in account for the giver period '''
     from .transactions import LedgerTransactions
-
-    # account = request.args.get('account')
-    # dateFrom = request.args.get('dateFrom')
-    # dateTo = request.args.get('dateTo')
 
     assert account is not None
     assert dateFrom is not None
