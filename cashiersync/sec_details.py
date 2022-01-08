@@ -89,11 +89,12 @@ class SecurityDetails:
         return result
 
     def get_income(self):
+        ''' Returns income balance for the last year '''
         from datetime import date, timedelta
 
         yield_start_date = date.today() - timedelta(weeks=52)
         yield_from = yield_start_date.strftime("%Y-%m-%d")
-        
+
         ledger = LedgerExecutor(self.logger)
         # the accound ends with the symbol name
         ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat --no-total'
@@ -101,15 +102,15 @@ class SecurityDetails:
         rows = ledger.split_lines(rows)
         return rows
 
-    def get_income_balance(self):
+    def get_income_balance(self) -> str:
         ''' Gets the balance of income for the security '''
         from datetime import date, timedelta
-        
+
         ledger = LedgerExecutor(self.logger)
 
         yield_start_date = date.today() - timedelta(weeks=52)
         yield_from = yield_start_date.strftime("%Y-%m-%d")
-        
+
         # the accound ends with the symbol name
         # todo: use --collapse instead
         ledger_cmd = f'b ^Income and :{self.symbol}$ -b {yield_from} --flat -X {self.currency}'
@@ -120,7 +121,7 @@ class SecurityDetails:
         total = self.get_total_from_ledger_output(output)
         return total
 
-    def get_value_balance(self):
+    def get_value_balance(self) -> str:
         ''' Gets the current value of the security holdings in the given currency '''
         ledger = LedgerExecutor(self.logger)
         cmd = f"b ^Assets and :{self.symbol}$ -X {self.currency}"
@@ -129,7 +130,7 @@ class SecurityDetails:
         value = self.get_total_from_ledger_output(output)
         return value
 
-    def get_total_from_ledger_output(self, output):
+    def get_total_from_ledger_output(self, output) -> str:
         ''' Extract the total value from ledger output '''
         from cashiersync.ledger_output_parser import LedgerOutputParser
 
@@ -139,16 +140,16 @@ class SecurityDetails:
         total_numeric = self.extract_total(total_line)
         return total_numeric
 
-    def extract_total(self, total_line):
+    def extract_total(self, total_line) -> str:
         ''' Gets the numeric value of the total from the ledger total line '''
         #self.logger.debug(total_line)
-        
+
         # Extract the numeric value of the income total.
         total_parts = total_line.split(' ')
         total_numeric = total_parts[0]
         #self.logger.debug(f'total: {total_numeric}')
         # Remove thousand-separator
-        total_numeric = total_numeric.replace(',', '') 
+        total_numeric = total_numeric.replace(',', '')
 
         # result = Decimal(total_numeric)
         result = total_numeric
@@ -166,6 +167,6 @@ class SecurityDetails:
         assert len(parts) == 4
 
         number = parts[0]
-        number = number.replace(',', '') 
+        number = number.replace(',', '')
 
         return number
