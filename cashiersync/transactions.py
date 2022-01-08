@@ -43,12 +43,12 @@ class LedgerTransactions:
         from cashiersync.ledger_output_parser import LedgerOutputParser
 
         parser = LedgerOutputParser()
-        
+
         parts = line.split('  ')
         parts = parser.remove_blank_values_from_splits(parts)
         parts = parser.trim_all(parts)
-        # date payee   account   amount  total
-        date_payee = parts[0].split(' ')
+        # date payee account amount total
+        date_payee = parts[0].split(' ', 1)
 
         tx = Transaction()
         tx.date = date_payee[0]
@@ -58,4 +58,3 @@ class LedgerTransactions:
         tx.total = parts[3]
 
         return tx
-
