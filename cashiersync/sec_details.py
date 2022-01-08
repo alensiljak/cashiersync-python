@@ -20,7 +20,7 @@ class SecurityDetails:
         # The currency to use for all values
         self.currency = currency
     
-    def calculate(self):
+    def calculate(self) -> dict:
         '''
         The main method, which calculates everything.
         '''

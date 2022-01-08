@@ -8,7 +8,7 @@ from cashiersync.model import RegisterRow
 class LedgerOutputParser:
     def __init__(self):
         super().__init__()
-    
+
     def get_total_lines(self, output):
         '''
         Extract the total lines from the output, 
@@ -21,7 +21,7 @@ class LedgerOutputParser:
         # Special cases
         # if len(output) == 0:
         #     return 0
-        
+
         if len(output) == 1:
             # No income is an array with an empty string ['']
             if output[0] == '':
