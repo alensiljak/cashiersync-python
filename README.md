@@ -1,3 +1,7 @@
+Note: This repository is deprecated in favour of https://gitlab.com/alensiljak/cashiersync-go
+
+There will be no new updates here.
+
 # cashier-sync
 
 Cashier Sync is a (server-side) component that allows syncing [Cashier](https://cashier.alensiljak.eu.org/), ([source](https://gitlab.com/alensiljak/cashier)) to a local instance of ledger.
