@@ -11,7 +11,7 @@ def test_parsing_long_line():
     '''
     line = "2020-01-01 SYMBOL1 distribution               In:Investme:Dividend:Broker1234:SYMBOL1           -77.81 USD           -77.81 USD"
 
-    tx = parser.get_tx_from_register_line(line, None)
+    tx = parser.get_row_from_register_line(line, None)
 
     assert tx is not None
     assert tx.date == "2020-01-01"
@@ -26,7 +26,7 @@ def test_parsing_short_line():
     '''
     line = "                                              Assets:Investments:Broker:Cash Acc                 83.65 EUR                    0"
 
-    tx = parser.get_tx_from_register_line(line, None)
+    tx = parser.get_row_from_register_line(line, None)
 
     assert tx is not None
     assert tx.date == None

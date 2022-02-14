@@ -6,8 +6,11 @@ from cashiersync.model import RegisterRow
 
 
 class LedgerOutputParser:
-    def __init__(self):
-        super().__init__()
+    '''
+    Parse Ledger output. Read transactions.
+    '''
+    # def __init__(self):
+    #     super().__init__()
 
     def get_total_lines(self, output):
         '''
@@ -87,7 +90,7 @@ class LedgerOutputParser:
         for line in ledger_lines:
             tx = self.get_row_from_register_line(line, prev_row)
 
-            if(tx.date):
+            if tx.date:
                 prev_row = tx
 
             txs.append(tx)
@@ -106,7 +109,7 @@ class LedgerOutputParser:
         payee_str = line[11:46].strip()
         account_str = line[46:85].strip()
         amount_str = line[85:107].strip()
-            
+
         tx = RegisterRow()
 
         # Date
