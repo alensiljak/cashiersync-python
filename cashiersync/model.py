@@ -8,11 +8,13 @@ from decimal import Decimal
 
 class RegisterRow:
     '''
-    Represents the register transaction. 
+    Represents the register transaction.
     Also used for IB report comparison.
     '''
     def __init__(self):
         self.date: str = None
+        ''' Effective date '''
+        self.effective_date: str = None
         self.payee: str = None
         self.account: str = None
         self.amount: Decimal = None
