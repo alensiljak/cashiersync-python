@@ -13,8 +13,9 @@ class RegisterRow:
     '''
     def __init__(self):
         self.date: str = None
-        ''' Effective date '''
-        self.effective_date: str = None
+        self.report_date: str = None
+        #''' Effective date '''
+        #self.effective_date: str = None
         self.payee: str = None
         self.account: str = None
         self.amount: Decimal = None
