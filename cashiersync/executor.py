@@ -25,7 +25,7 @@ class Executor:
             raise Exception('Ledger error', output)
         else:
             output = result.stdout
-        
+
         #output = self.split_lines(output)
 
         return output

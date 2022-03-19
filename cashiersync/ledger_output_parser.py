@@ -151,7 +151,7 @@ class LedgerOutputParser:
         # Amount
         # Get from the end.
         parts = amount_str.split()
-        if (len(parts) != 2):
+        if len(parts) != 2:
             print(tx)
         assert len(parts) == 2
 
