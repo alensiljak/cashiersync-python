@@ -1,10 +1,6 @@
-Note: This repository is deprecated in favour of https://gitlab.com/alensiljak/cashiersync-go
-
-There will be no new updates here.
-
 # cashier-sync
 
-Cashier Sync is a (server-side) component that allows syncing [Cashier](https://cashier.alensiljak.eu.org/), ([source](https://gitlab.com/alensiljak/cashier)) to a local instance of ledger.
+Cashier Sync is a (server-side) component that allows syncing [Cashier](https://cashier-ii.alensiljak.eu.org/), ([source](https://github.com/alensiljak/cashier-blazor)) to a local instance of ledger.
 
 It is written in Python and is available for installation via pip (PyPi).
 
@@ -34,7 +30,7 @@ However, since Python runs in Termux, it might be more convenient to run the ser
 ### Production
 
 The `cashiersync` executable console script is registered by the setup. This will run the web app.
-This may require the wheel package.
+This may require the `wheel` package.
 
 The configuration file can be created if the default options are to be modified.
 
