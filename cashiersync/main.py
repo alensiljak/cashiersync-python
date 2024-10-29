@@ -1,9 +1,11 @@
+''' Application entry point '''
+
+import logging
 from fastapi import Body, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from yaml import parse
+#from yaml import parse
 from .ledger_exec import LedgerExecutor
-import logging
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -19,6 +21,7 @@ app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_credentials=True,
 
 @app.get("/")
 async def hello():
+    ''' Test method '''
     return "Hello World!"
 
 
@@ -41,6 +44,7 @@ async def hello_img():
 
 @app.get("/accounts")
 def accounts():
+    ''' returns ledger accounts '''
     params = "accounts"
     ledger = LedgerExecutor(logger)
     result = ledger.run(params)
@@ -55,6 +59,7 @@ def accounts():
 
 @app.get("/balance")
 def balance():
+    ''' returns account balance '''
     params = "b --flat --no-total"
     ledger = LedgerExecutor(logger)
     result = ledger.run(params)
@@ -63,7 +68,7 @@ def balance():
 
 
 @app.get("/currentValues")
-def currentValues(root: str, currency: str):
+def current_values(root: str, currency: str):
     '''
     Current values of accounts under the given root account and 
     in the requested currency.
@@ -88,7 +93,7 @@ def currentValues(root: str, currency: str):
         balance = balance.strip()
         account = row[index:]
         account = account.strip()
-        
+
         parsed[account] = balance
 
     return parsed
@@ -96,6 +101,7 @@ def currentValues(root: str, currency: str):
 
 @app.get("/lots")
 def lots(symbol: str):
+    ''' returns lots from ledger '''
     from .lots_parser import LotParser
 
     parser = LotParser(logger)
@@ -107,7 +113,7 @@ def lots(symbol: str):
 @app.get('/payees')
 def payees():
     ''' Send Payees as a simple list '''
-    params = f"payees"
+    params = 'payees'
     ledger = LedgerExecutor(logger)
     result = ledger.run(params)
     return result
@@ -182,8 +188,9 @@ def transactions(account: str, dateFrom: str, dateTo: str):
 
 @app.post('/xact')
 async def xact(query: dict = Body(...)):
+    ''' ? '''
     # query = request.get_json()
-    logger.debug(f'query={query}')
+    logger.debug('query=%s', query)
     params = 'xact '
 
     if 'date' in query:
