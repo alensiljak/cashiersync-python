@@ -1,0 +1,13 @@
+# Tests using REST Client
+
+# @server = http://localhost:5000
+@server = http://localhost:3000
+
+###
+//GET {{server}}/ledger
+###
+GET {{server}}/?command=b gratis
+
+### 
+# Shutdown the server
+GET {{server}}/shutdown

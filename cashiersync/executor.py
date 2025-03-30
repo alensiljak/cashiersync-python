@@ -7,8 +7,9 @@ class Executor:
     def __init__(self, logger = None):
         super().__init__()
         self.logger = logger
+        self.process = None
 
-    def run(self, command, cwd: str = None):
+    def run_subprocess(self, command, cwd: str = None):
         ''' Execute a command in the local terminal '''
         import subprocess
 
@@ -29,3 +30,22 @@ class Executor:
         #output = self.split_lines(output)
 
         return output
+
+    def run(self, command):
+        ''' Run Ledger-cli command '''
+        import pexpect
+
+        self.process = pexpect.spawn('ledger', encoding='utf-8')
+        # child.logfile_read = sys.stdout
+        self.process.expect(']')
+
+        self.process.sendline(command)
+        self.process.expect(']')
+
+        output = self.process.before
+        return output
+
+    def shutdown(self):
+        ''' Close the process '''
+        if self.process:
+            self.process.sendline('quit')

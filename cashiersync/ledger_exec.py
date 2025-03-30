@@ -4,7 +4,7 @@ Runs ledger-cli to fetch the data.
 '''
 
 class LedgerExecutor:
-    def __init__(self, logger):
+    def __init__(self, logger = None):
         super().__init__()
         self.logger = logger
 

@@ -1,12 +1,12 @@
 '''
-Store configuration in YAML format,
+Store configuration in TOML format,
 in user's configuration directory.
 '''
 
 
 class Configuration:
     def __init__(self):
-        self.config_file_name = "config.yaml"
+        self.config_file_name = "config.toml"
         self.app_name = "cashiersync"
 
         self.create_config_file()
@@ -14,7 +14,7 @@ class Configuration:
 
     def read_config(self):
         ''' Read configuration file '''
-        import yaml
+        import tomli
 
         path = self.get_config_path()
         content = ''
