@@ -10,14 +10,17 @@ rm -rf dist
 #::pause
 
 #:: Create the binary package.
-python setup.py sdist bdist_wheel
+#python setup.py sdist bdist_wheel
+uv build
 
 #::pause
 
 #:: Deploy to test server.
-twine upload -u cicko --repository-url https://test.pypi.org/legacy/ dist/*
+#twine upload -u cicko --repository-url https://test.pypi.org/legacy/ dist/*
 
 #::pause
 
 #:: Deploy to prod server.
-twine upload -u cicko --repository-url https://upload.pypi.org/legacy/ dist/*
+#twine upload -u cicko --repository-url https://upload.pypi.org/legacy/ dist/*
+
+uv publish

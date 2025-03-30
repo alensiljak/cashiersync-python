@@ -9,30 +9,10 @@ class Executor:
         self.logger = logger
         self.process = None
 
-    def run_subprocess(self, command, cwd: str = None):
-        ''' Execute a command in the local terminal '''
-        import subprocess
-
-        #self.logger.debug(f'running in {cwd}')
-
-        result = subprocess.run(command, shell=True, encoding="utf-8", capture_output=True,
-            cwd=cwd)
-
-        # if self.logger:
-        #     self.logger.debug(result)
-
-        if result.returncode != 0:
-            output = result.stderr
-            raise Exception('Ledger error', output)
-        else:
-            output = result.stdout
-
-        #output = self.split_lines(output)
-
-        return output
-
     def run(self, command) -> list[str]:
-        ''' Run Ledger-cli command '''
+        ''' Run Ledger-cli command 
+        Runs a process using pexpect. This works with ledger-cli.
+        '''
         import pexpect
         from strip_ansi import strip_ansi
 

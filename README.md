@@ -33,10 +33,7 @@ However, since Python runs in Termux, it might be more convenient to run the ser
 
 ### Production
 
-The `cashiersync` executable console script is registered by the setup. This will run the web app.
-This may require the `wheel` package.
-
-The configuration file can be created if the default options are to be modified.
+The `cashiersync` executable console script is registered on installation. This will run the web app.
 
 ### Running on Mobile Devices
 
@@ -44,7 +41,10 @@ The server can also run on Android in Termux. All that is needed in such case is
 
 ## Development
 
-Run uvicorn.
+Run with
+```sh
+uv run main.py
+```
 
 ### Deployment
 
