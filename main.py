@@ -1,10 +1,11 @@
 ''' Application entry point '''
 
 import logging
+from cashiersync.executor import Executor
 from fastapi import Body, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from cashiersync.ledger_exec import LedgerExecutor
+# from cashiersync.ledger_exec import LedgerExecutor
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -27,13 +28,15 @@ def ledger(request: Request):
     print(request.query_params)
     params = request.query_params._dict
 
-    # params.command
+    command = params.get('command', None)
 
     global ledger_exec
     if ledger_exec is None:
-        ledger_exec = LedgerExecutor(logger=logger)
+        ledger_exec = Executor(logger=logger)
 
-    return params
+    result = ledger_exec.run(command)
+
+    return result
 
     #config = Config()
     # path = config.get_config_path()
