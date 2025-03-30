@@ -5,7 +5,7 @@ from fastapi import Body, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 #from yaml import parse
-from .ledger_exec import LedgerExecutor
+from cashiersync.ledger_exec import LedgerExecutor
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -239,7 +239,7 @@ def run_server():
     # Prod setup:
     # debug=False
     import uvicorn
-    uvicorn.run("cashiersync.main:app", host="0.0.0.0", port=5000)
+    uvicorn.run("main:app", host="0.0.0.0", port=5000)
     # log_level='debug'
     # log_level="info"
 

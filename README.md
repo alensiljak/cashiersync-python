@@ -1,6 +1,6 @@
 # cashier-sync
 
-Cashier Sync is a (server-side) component that allows syncing [Cashier](https://cashier-ii.alensiljak.eu.org/), ([source](https://github.com/alensiljak/cashier-blazor)) to a local instance of ledger.
+Cashier Sync is a (server-side) component that allows syncing [Cashier](https://cashier-svelte.netlify.app/), ([source](https://github.com/alensiljak/cashier-blazor)) to a local instance of ledger.
 
 It is written in Python and is available for installation via pip (PyPi).
 
@@ -8,7 +8,11 @@ Cashier Sync simply provides an API end point, by default on port 5000, to which
 
 ## Setup and Use
 
-For usage, running `pip install cashiersync` will get you most of the way. Run `cashiersync` in a console from a location in which you can also run ledger-cli, because Cashier Sync will simply run `ledger` to get the required data.
+Install `cashiersync` Python package. The recommended way is via `uv`:
+```sh
+uv tool install cashiersync
+```
+Run `cashiersync` in a console from a location in which you can also run ledger-cli, because Cashier Sync will simply run `ledger` to get the required data.
 
 You can create your setup by adding a `.ledgerrc` file, pointing to the desired book and prices, or in any way you prefer.
 
