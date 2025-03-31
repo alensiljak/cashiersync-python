@@ -1,11 +1,15 @@
 ''' Application entry point '''
 
 import logging
-from cashiersync.executor import Executor
-from fastapi import Body, FastAPI, Request
+import os
+import signal
+import uvicorn
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-# from cashiersync.ledger_exec import LedgerExecutor
+
+from cashiersync.executor import Executor
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -19,21 +23,27 @@ ledger_exec = None
 
 
 @app.get('/')
-def ledger(request: Request):
+def ledger(command: str = None):
     ''' Returns the ledger file '''
     # from fastapi.responses import FileResponse
     # from cashiersync.config import Config
 
     # params will contain all query parameters as a dictionary
-    print(request.query_params)
-    params = request.query_params._dict
+    # request: Request
+    # print(request.query_params)
+    # params = request.query_params # ._dict
 
-    command = params.get('command', None)
+    # command = params.get('command', None)
 
+    if command is None:
+        return {"message": "No command provided"}
+    
     global ledger_exec
     if ledger_exec is None:
         ledger_exec = Executor(logger=logger)
 
+    logger.debug(f"Ledger command: {command}")
+    
     result = ledger_exec.run(command)
 
     return result
@@ -53,8 +63,8 @@ def about():
 async def hello_img():
     ''' Returns an image, can be used with <img> element to check online status. '''
 
-    import io
     import base64
+    import io
 
     # Base64 encoded pixel
     pixelEncoded = b'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
@@ -67,7 +77,16 @@ async def hello_img():
 
 @app.get('/shutdown')
 def shutdown():
-    import os, signal
+    """
+    Gracefully shuts down the application and its components.
+    This function performs the following shutdown sequence:
+    1. Shuts down the Ledger component if it exists
+    2. Terminates the current process using SIGTERM signal
+    Global Variables:
+        ledger_exec (object): Reference to the Ledger component instance
+    Returns:
+        dict: A message indicating shutdown is in progress
+    """
 
     # Shutdown Ledger
     global ledger_exec
@@ -87,7 +106,6 @@ def run_server():
     ''' Available to be called from outside, i.e. console scripts in setup. '''
     # Prod setup:
     # debug=False
-    import uvicorn
     port = 3000 # to match the Rust version. Original: 5000.
     uvicorn.run("main:app", host="0.0.0.0", port=port)
     # config = uvicorn.Config("main:app", host="0.0.0.0", port=port)

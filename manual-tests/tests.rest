@@ -7,7 +7,11 @@
 //GET {{server}}/ledger
 ###
 GET {{server}}/?command=b gratis
-
+###
+GET {{server}}/?command=b N26
 ### 
 # Shutdown the server
 GET {{server}}/shutdown
+###
+# error
+GET {{server}}/?command=b --flat --empty --no-total

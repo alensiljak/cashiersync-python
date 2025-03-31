@@ -7,7 +7,7 @@ authors = [
 ]
 readme = 'README.md'
 requires-python = ">=3.12"
-dependencies = ['fastapi', 'pexpect', 'pyxdg', 'strip-ansi', 'tomli', 'uvicorn', ]
+dependencies = ['fastapi', 'pexpect', 'uvicorn']
 license = { file = "LICENSE" }
 keywords = ['cashier', 'finance', 'portfolio', 'ledger-cli']
 classifiers = [
