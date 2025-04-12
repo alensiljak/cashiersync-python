@@ -1,73 +1,98 @@
 '''
-Encapsulates subprocess for execution of external console commands
-and programs.
+Runs Ledger in a background process.
 '''
-import pexpect
+
+import asyncio
+from threading import Lock
 
 class Executor:
-    """Class for executing Ledger-cli commands and returning their output.
-    This class provides functionality to run Ledger-cli commands using pexpect,
-    handle the output, and clean up ANSI escape sequences from the results.
-    Attributes:
-        logger: Optional logger instance for debugging purposes
-        process: pexpect spawn object representing the Ledger-cli process
-    Methods:
-        run(command): Executes a Ledger-cli command and returns cleaned output
-        clean_ansi(text): Removes ANSI escape sequences from text
-        shutdown(): Closes the Ledger-cli process
-    Example:
-        executor = Executor()
-        result = executor.run('balance')
-        executor.shutdown()
     """
-    def __init__(self, logger = None):
-        super().__init__()
-
+    Class Executor
+    This class manages an interactive subprocess running the "ledger" command-line tool.
+    It provides methods to send commands to the ledger process, read responses,
+    and gracefully shutdown the process.
+    Attributes:
+        logger (Optional[logging.Logger]): Optional logger instance for debug and error logging.
+        lock (threading.Lock): A lock to ensure that interactions with the ledger process are thread-safe.
+        process (subprocess.Popen): The subprocess running the ledger command in interactive mode.
+    Methods:
+        __init__(logger=None):
+            Initializes the Executor instance by setting up the logger, a threading lock,
+            and starting the ledger process in interactive mode. Logs a debug message if a logger is provided.
+        run(command: str) -> subprocess.CompletedProcess:
+            Sends a command string to the ledger process via its standard input and reads the output until
+            a prompt (assumed to end with ']') is encountered. Returns a subprocess.CompletedProcess-like object
+            with the command, a return code of 0, the accumulated standard output, and an empty standard error string.
+        shutdown():
+            Shuts down the ledger process by sending a "quit" command if possible, terminating the process,
+            and waiting for it to exit. Any exceptions during shutdown are logged as errors if a logger is provided.
+    """
+    def __init__(self, logger=None):
         self.logger = logger
-        # Run ledger-cli immediately.
-        self.process = pexpect.spawn('ledger', encoding='utf-8')
-        self.process.expect(']')
-        logger.debug('Ledger process started.')
+        self.lock = Lock()
+        self.process = None
 
-    def run(self, command) -> list[str]:
-        ''' Run Ledger-cli command 
-        Runs a process using pexpect. This works with ledger-cli.
+    async def start(self):
         '''
+        Starts the ledger process in interactive mode using asyncio.
+        This method is asynchronous and should be awaited.
+        '''
+        self.process = await asyncio.create_subprocess_exec('ledger',
+            stdin=asyncio.subprocess.PIPE,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
 
-        # child.logfile_read = sys.stdout
-        # self.process = pexpect.spawn('ledger', encoding='utf-8')
-        # self.process.expect(']')
+        if self.logger:
+            self.logger.debug('Ledger process started.')
 
-        self.process.sendline(command)
-        self.process.expect(']', timeout=15)
-        # self.process.expect(pexpect.EOF, timeout=15)
 
-        output = self.process.before
+    def run(self, command: str) -> str:
+        '''
+        Sends a command to the ledger process and reads the output until a prompt is encountered.
+        Args:
+            command (str): The command to send to the ledger process.
+        Returns:
+            str: The output from the ledger process.
+        Raises:
+            RuntimeError: If the ledger process is not available (stdin or stdout is None).
+        '''
+        with self.lock:
+            if self.process is None:
+                raise RuntimeError("Ledger process not available.")
 
-        # clean up new lines
-        output = output.splitlines()
-        
-        # clean up ANSI codes
-        output = [self.clean_ansi(line) for line in output]
-
-        # Remove the first line (command).
-        output = output[1:]
-
-        # remove empty lines
-        output = [line for line in output if line.strip() != '']
-
-        return output
-
-    def clean_ansi(self, text: str) -> str:
-        ''' Remove ANSI escape codes '''
-        import re
-        # ansi_escape = re.compile(r'\x1B\[[0-?9;]*[mK]')
-        # ansi_escape = re.compile(r'(\x1B[@-_][0-?]*[ -/]*[@-~])')
-        # ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-        ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~]|[=>])')
-        return ansi_escape.sub('', text)
+            # Send the command to ledger.
+            self.process.stdin.write(command + "\n")
+            self.process.stdin.flush()
+            output_lines = []
+            # Read the output until a prompt is encountered.
+            # Adjust the condition below to match the actual ledger prompt.
+            while True:
+                line = self.process.stdout.readline()
+                if not line:
+                    break
+                output_lines.append(line)
+                if line.strip().endswith(']'):
+                    break
+            output = ''.join(output_lines)
+            # Create a result object similar to subprocess.CompletedProcess.
+            # result = asyncio.subprocess.CompletedProcess(args=command, returncode=0, stdout=output, stderr="")
+            result = output
+            return result
 
     def shutdown(self):
-        ''' Close the process '''
+        '''
+        Shuts down the ledger process.
+        '''
         if self.process:
-            self.process.sendline('quit')
+            try:
+                if self.process.stdin:
+                    # Send a quit command if ledger supports it.
+                    self.process.stdin.write("quit\n")
+                    self.process.stdin.flush()
+                self.process.terminate()
+                # self.process.wait(timeout=10)
+                self.process.wait()
+            except OSError as e:
+                if self.logger:
+                    self.logger.error("Error during shutdown: %s", e)
